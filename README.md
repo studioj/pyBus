@@ -19,6 +19,27 @@ There are 2 main components:
 * Nagivate in the folders to play an entire folder.
 * View RPM, current speed...
 
+## Tasks
+- [x] Configure bluetooth for auto-pairing with any device
+- [x] Develop the mpd client to control the audio
+- [x] Integrate it into the pyBus
+- [ ] Test the integration with the actual CAN bus
+- [ ] Have fun
+
+## Controls
+
+These are the foreseen buttons to control the multimedia : 
+
+Button | Action | | Button | Action
+--- | ---| --- |--- | ---
+`>` | Parent folder | | `1` | Play/pause 
+`>` | Enter folder / Play file | | `2` | TBD
+`+` | Next item (file/folder) | | `3` | Previous song
+`-` | Previous item (file or folder) | | `4` | Next song
+ | | | |`5`| Toggle Bluetooth audio
+ | | | |`6`| Display car info (speed, ...)
+
+
 ### Useful links
 http://linux.die.net/man/5/mpd.conf   
 http://miro.oorganica.com/raspberry-pi-mpd/   
