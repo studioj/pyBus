@@ -22,7 +22,7 @@ There are 2 main components:
 ## Tasks
 - [x] Configure bluetooth for auto-pairing with any device
 - [x] Develop the mpd client to control the audio
-- [x] Integrate it into the pyBus
+- [ ] (in progress) Integrate it into the pyBus
 - [ ] Test the integration with the actual CAN bus
 - [ ] Have fun
 
@@ -53,10 +53,10 @@ All software is in early alpha stages!
 Soooon..
 
 ## Pre-Requisites
-* python, mpd, python-setuptools
+* python, pip-python, python-dev, build-essentials,, mpd, python-setuptools
 	* `apt-get install python python-setuptools mpd`
-* **Python modules:** termcolor, web.py, python-mpd, pyserial
-	* `easy_install termcolor web.py python-mpd pyserial`
+* **Python modules:** python-mpd2, pyserial, tinytag
+	* `python-mpd2 pyserial tinytag`
 ## How to use
 * Install the prerequisites above
 * Ensure music is available at /Music and that mpd is configured to read from there (best test mpc using mpc prior)
