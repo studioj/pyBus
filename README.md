@@ -53,10 +53,10 @@ All software is in early alpha stages!
 Soooon..
 
 ## Pre-Requisites
-* python, pip-python, python-dev, build-essentials,, mpd, python-setuptools
-	* `apt-get install python python-setuptools mpd`
+* python, pip-python, python-dev, build-essentials, mpd, python-setuptools
+	* `apt-get install python python-setuptools python-pip python-dev build-essenial mpd`
 * **Python modules:** python-mpd2, pyserial, tinytag
-	* `python-mpd2 pyserial tinytag`
+	* `pip install python-mpd2 pyserial tinytag`
 ## How to use
 * Install the prerequisites above
 * Ensure music is available at /Music and that mpd is configured to read from there (best test mpc using mpc prior)
