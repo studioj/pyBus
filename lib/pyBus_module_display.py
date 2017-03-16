@@ -39,14 +39,15 @@ def _hexText(string):
 def addStringToQue(string):
   global DISPLAY_QUE
   DISPLAY_QUE.append(string)
-  
+
 # Increment display offset to scroll screen. Once scrolled, set to next display mode
 def _scrollDisplay():
   global DISPLAY_QUE, TICK
   if (len(DISPLAY_QUE) > 0):
     string = DISPLAY_QUE[0]
     if (len(string) > MAX_STRINGLEN):
-      string = string[1:30] # if you have more than 30 characters you can go suck a lemon, scrolling text is already hogging a lot of the bus
+      string = string[1:30]
+      # if you have more than 30 characters you can go suck a lemon, scrolling text is already hogging a lot of the bus
       insertStringToQue(string, 1) # insert it after this string as this element will be deleted in the updateQue method
     else:
       return False
@@ -68,7 +69,7 @@ def updateQue():
 def setQue(que):
   global DISPLAY_QUE
   DISPLAY_QUE = que
-  
+
 def setDisplay(safe):
   global DISPLAY_TEXT
   DISPLAY_TEXT = safe
@@ -93,8 +94,8 @@ class busWriter ( threading.Thread ):
   def write(self):
     if (len(DISPLAY_QUE) > 0):
       string = DISPLAY_QUE[0]
-      self.IBUS.writeBusPacket('C8', '80', _hexText(string)) 
-  
+      self.IBUS.writeBusPacket('C8', '80', _hexText(string))
+
   def run(self):
     logging.info('Display thread initialized')
     while True:
