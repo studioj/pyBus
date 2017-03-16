@@ -34,7 +34,7 @@ def configureLogging(numeric_level):
   logging.basicConfig(
     level=numeric_level,
     format='%(asctime)s [%(levelname)s in %(module)s] %(message)s', 
-    datefmt='%Y/%m/%dT%I:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S'
   )
   
 def createParser():

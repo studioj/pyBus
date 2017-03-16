@@ -14,8 +14,8 @@ sys.path.append( './lib/' )
 
 # Here we import the two types of drivers. The event driven driver, and the ticking driver.
 import pyBus_eventDriver as pB_eDriver # For responding to signals
-
 from pyBus_interface import *
+
 #####################################
 # GLOBALS
 #####################################
@@ -39,7 +39,6 @@ def initialize():
       logging.warning("USB interface not found at (%s). Waiting 1 seconds.", DEVPATH)
       time.sleep(2)
   IBUS.waitClearBus() # Wait for the iBus to clear, then send some initialization signals
-  
   pB_eDriver.init(IBUS)
   
 # close the USB device and whatever else is required
