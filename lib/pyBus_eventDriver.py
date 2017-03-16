@@ -198,7 +198,8 @@ def d_RESET(packet):
   pB_display.immediateText('RESET')
   raise TriggerRestart("Restart Triggered")
 
-# This packet is used to parse all messages from the IKE (instrument control electronics), as it contains speed/RPM info. But the data for speed/rpm will vary, so it must be parsed via a method linked to 'ALL' data in the JSON DIRECTIVES
+# This packet is used to parse all messages from the IKE (instrument control electronics), as it contains speed/RPM info.
+# But the data for speed/rpm will vary, so it must be parsed via a method linked to 'ALL' data in the JSON DIRECTIVES
 def d_custom_IKE(packet):
   packet_data = packet['dat']
   if packet_data[0] == '18':
