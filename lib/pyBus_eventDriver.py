@@ -47,22 +47,31 @@ DIRECTIVES = {
       '380A01' : 'd_cdPrev',
       '380700' : '',
       '380701' : '',
-      '380601' : 'd_toggleSS', # 1 pressed
-      '380602' : 'd_togglePause', # 2 pressed
-      '380603' : 'd_testSpeed', # 3 pressed
-      '380604' : 'd_standup', # 4 pressed
-      '380605' : 'd_update', # 5 pressed
-      '380606' : 'd_RESET', # 6 pressed
-      '380400' : '', # prev Playlist function?
-      '380401' : '', # next Playlist function?
+      '380601' : 'd_button1', 	# 1 pressed
+      '380602' : 'd_button2', 	# 2 pressed
+      '380603' : 'd_button3',	# 3 pressed
+      '380604' : 'd_button4', 	# 4 pressed
+      '380605' : 'd_button5', 	# 5 pressed
+      '380606' : 'd_button6', 	# 6 pressed
+      '380400' : '', 		# prev Playlist function?
+      '380401' : '', 		# next Playlist function?
       '380800' : 'd_cdRandom',
       '380801' : 'd_cdRandom'
     }
   },
   '50' : {
     'C8' : {
-      '01' : 'd_cdPollResponse', # This can happen via RT button or ignition
-      '3B40' : 'd_RESET'
+      '01'   : 'd_cdPollResponse', 	# This can happen via RT button or ignition
+      '3B40' : 'd_button6',
+      '3B80' : 'd_buttonRT',
+      '3B90' : 'd_buttonVoiceHold',
+    },
+    # Multifunction steering wheel
+    '68' : {
+      '3211' : 'd_buttonPlus',	# + pressed
+      '3210' : 'd_buttonMinus', # - pressed
+      '3B01' : 'd_buttonNext',	# > pressed
+      '3B08' : 'd_buttonPrev'   # < pressed
     }
   }
 }
@@ -165,7 +174,7 @@ def d_keyOut(packet):
   WRITER.writeBusPacket('3F','00', ['0C', '55', '01']) # Put up window 3
   WRITER.writeBusPacket('3F','00', ['0C', '43', '01']) # Put up window 4
 
-def d_toggleSS(packet):
+def d_button1(packet):
   global SESSION_DATA
   SESSION_DATA['SPEED_SWITCH'] = not SESSION_DATA['SPEED_SWITCH']
   if SESSION_DATA['SPEED_SWITCH']:
@@ -173,18 +182,18 @@ def d_toggleSS(packet):
   else:
     pB_display.immediateText('SpeedSw: Off')
 
-def d_togglePause(packet):
+def d_button2(packet):
   logging.info("Play/Pause")
   toggle = pB_audio.playpause()
   pB_display.immediateText(toggle)
 
-def d_update(packet):
+def d_button5(packet):
   # TODO Implement a status updater using the tickUtil
   logging.info("UPDATE")
   #pB_display.immediateText('UPDATING')
   pB_audio.update()
 
-def d_RESET(packet):
+def d_button6(packet):
   logging.info("RESET")
   pB_display.immediateText('RESET')
   raise TriggerRestart("Restart Triggered")
@@ -262,7 +271,7 @@ def d_cdRandom(packet):
     pB_display.immediateText('Random: OFF')
   _displayTrackInfo(False)
 
-def d_testSpeed(packet):
+def d_button3(packet):
   speedTrigger(110)
 
 # Do whatever you like here regarding the speed!
