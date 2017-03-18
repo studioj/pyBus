@@ -78,13 +78,13 @@ class ibusFace ( ):
         break # we have found a significant delay in signals, but have swallowed the first character in doing so.
               # So the next code swallows what should be the rest of the packet
 
-    packetLength = self.readChar() # len packet
-    self.readChar() # dst packet
+    packetLength = self.readChar() 	# len packet
+    self.readChar() 			# dst packet
     dataLen = int(packetLength, 16) - 2 # Determind length of this packet from the packetLength variable, then swallow that
     while dataLen > 0:
       self.readChar()
       dataLen = dataLen - 1
-    self.readChar() # XOR packet. This will be the last bit of the packet. I could change the while loop variable by one, but this adds clarity.
+    self.readChar() # XOR packet :  last bit of the packet
 
   # Read a packet from the bus
   def readBusPacket(self):
@@ -131,7 +131,7 @@ class ibusFace ( ):
     self.SDEV.write(data)
     self.SDEV.flush()
 
-  # get the checksum of a complete packet to be appended to the packet - I think everything listening on ibus checks these packets (except for this tool)
+  # get the checksum of a complete packet to be appended to the packet 
   def getCheckSum(self, packet):
     chk = 0
     packet.append(0)
@@ -139,9 +139,13 @@ class ibusFace ( ):
       chk ^= p
     return chk
 
-  # Write Packet to iBus, first length is determined, the packet is then constructed and a checksum generated/appended.
+  # Write Packet to iBus :
+  #   - length is determined
+  #   - packet is constructed
+  #   - checksum is generated/appended.
   # The packet is then sent if the CTS signal is good (Clear To Send)
   # TODO: Read to verify the packet we send is seen
+  
   def writeBusPacket(self, src, dst, data):
     time.sleep(0.01) # pause a tick
     length = '%02X' % (2 + len(data))
@@ -159,7 +163,8 @@ class ibusFace ( ):
     packetSent = False
     while (not packetSent):
       logging.debug("WRITE: %s" % packet)
-      if (self.SDEV.getCTS()) and ((int(round(time.time() * 1000)) - self.SDEV.lastWrite) > 10): # dont write packets to close together.. issues arise
+      if (self.SDEV.getCTS()) and ((int(round(time.time() * 1000)) - self.SDEV.lastWrite) > 10):
+	# Do not write packets too close together.. issues arise
         self.writeFullPacket(packet)
         logging.debug("WRITE: SUCCESS")
         self.SDEV.lastWrite = int(round(time.time() * 1000))
