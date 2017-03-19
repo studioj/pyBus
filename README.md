@@ -13,7 +13,9 @@ To make interaction with the CAN bus, it's to be used with the USB interface whi
 ## Overview
 There are 2 main components:  
 **pyBus.py** - interfaces with the iBus to emulate a CD-Changer  
-**pyBus_audio.py** - MPD client that will interpred buttons pressed, and control the music. Function foreseen :
+**pyBus_audio.py** - MPD client that will interpret buttons pressed, and control the music.
+
+Functions foreseen :
 * Play/Pause
 * Next/Previous
 * Nagivate in the folders to play an entire folder.
@@ -32,7 +34,7 @@ These are the foreseen buttons to control the multimedia :
 
 Button | Action
 --- | ---
-`>` | Parent folder
+`<` | Parent folder
 `>` | Enter folder / Play file
 `+` | Next item (file/folder)
 `-` | Previous item (file or folder)
@@ -64,7 +66,7 @@ Soooon..
 
 ## How to use
 * Install the prerequisites above
-* Ensure music is available at /Music and that mpd is configured to read from there (best test mpc using mpc prior)
+* Ensure music is available at /Music and that `mpd` is configured to read from there.
 * Plug in iBus USB device
 * Run: `./pyBus.py -d <PATH to USB Device>`
 	* E.g. `./pyBus.py -d /dev/ttyUSB0`
