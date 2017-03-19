@@ -30,14 +30,18 @@ There are 2 main components:
 
 These are the foreseen buttons to control the multimedia :
 
-Button | Action | | Button | Action
---- | ---| --- |--- | ---
-`>` | Parent folder | | `1` | Play/pause
-`>` | Enter folder / Play file | | `2` | TBD
-`+` | Next item (file/folder) | | `3` | Previous song
-`-` | Previous item (file or folder) | | `4` | Next song
- | | |`5`| Toggle Bluetooth audio
- | | |`6`| Display car info (speed, ...)
+Button | Action
+--- | ---
+`>` | Parent folder
+`>` | Enter folder / Play file
+`+` | Next item (file/folder)
+`-` | Previous item (file or folder)
+`1` | Play/pause
+`2` | TBD
+`3` | Previous song
+`4` | Next song
+`5` | Toggle Bluetooth audio
+`6` | Display car info (speed, ...)
 
 
 ### Useful links
