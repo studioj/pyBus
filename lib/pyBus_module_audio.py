@@ -7,6 +7,7 @@ from mpd import (MPDClient, CommandError)
 from socket import error as SocketError
 import pyBus_core as core
 from tinytag import TinyTag
+from subprocess import Popen, PIPE
 
 # TODO add long push and short push to add functions
 # TODO Beware of the path of the files

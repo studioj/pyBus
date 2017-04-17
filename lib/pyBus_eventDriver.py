@@ -294,6 +294,43 @@ def speedTrigger(speed):
     WRITER.writeBusPacket('3F','00', ['0C', '54', '01'])
     WRITER.writeBusPacket('3F','00', ['0C', '44', '01'])
 
+
+def d_toggleBluetooth(packet):
+  service = "bluetooth-agent"
+  global BLUETOOTH
+
+  # Stop playing and turn on Bluetooth
+  if not BLUETOOTH:
+      d_cdStopPlaying(packet)
+      pB_display.immediateText('Bluetooth : ON')
+      logging.info("Starting bluetooth-agent process...")
+      p = Popen(["service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+      stdout, stderr = p.communicate()
+      print "Stdout:", stdout
+      print "Stderr:", stderr
+
+      if stderr != '' :
+          logging.error("Error while starting bluetooth-agent")
+
+      logging.info("Starting bluetooth-agent process... OK")
+      BLUETOOTH = True
+
+  # Turn of bluetooth and resume playing
+  else :
+      pB_display.immediateText('Bluetooth : OFF')
+      logging.info("Stopping bluetooth-agent process...")
+      p = Popen(["service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+      stdout, stderr = p.communicate()
+      print "Stdout:", stdout
+      print "Stderr:", stderr
+      if stderr != '' :
+          logging.error("Error while starting bluetooth-agent")
+
+      logging.info("Stopping bluetooth-agent process... OK")
+      BLUETOOTH = False
+      d_cdStartPlaying(packet)
+
+
 ################## DIRECTIVE UTILITY FUNCTIONS ##################
 # Write current track to display
 def writeCurrentTrack():
