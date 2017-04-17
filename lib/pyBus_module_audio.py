@@ -42,6 +42,11 @@ def mpdConnect(client, con_id):
     return False
   return True
 
+# Updates MPD library
+def update():
+   logging.info('Updating MPD Library')
+   CLIENT.update()
+
 def init():
   global CLIENT
   ## MPD object instance
@@ -49,18 +54,14 @@ def init():
   if mpdConnect(CLIENT, CON_ID):
     logging.info('Connected to MPD server')
     #CLIENT.setvol(100)
-
-    repeat(True) # Repeat all tracks
+    #repeat(True) # Repeat all tracks
+    update()
   else:
     logging.critical('Failed to connect to MPD server')
     logging.critical("Sleeping 1 second and retrying")
     time.sleep(1)
     init()
 
-# Updates MPD library
-def update():
-  logging.info('Updating MPD Library')
-  CLIENT.update()
 
 def quit():
   if CLIENT:
