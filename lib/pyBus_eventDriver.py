@@ -15,11 +15,14 @@ import pyBus_module_display as pB_display     # Only events can manipulate the d
 import pyBus_module_audio as pB_audio         # Add the audio module as it will only be manipulated from here in pyBus
 import pyBus_tickUtil as pB_ticker            # Ticker for signals requiring intervals
 
-# This module will read a packet, match it against the json object 'DIRECTIVES' below.
-# The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible
-# Then matching the Destination if possible
-# The joining the 'data' component of the packet and matching that if possible.
-# The resulting value will be the name of a function to pass the packet to for processing of sorts.
+
+"""
+This module will read a packet, match it against the json object 'DIRECTIVES' below.
+The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible
+Then matching the Destination if possible
+The joining the 'data' component of the packet and matching that if possible.
+The resulting value will be the name of a function to pass the packet to for processing of sorts.
+"""
 
 #####################################
 # GLOBALS
@@ -80,7 +83,7 @@ DIRECTIVES = {
 
 WRITER = None
 SESSION_DATA = {}
-TICK = 0.02 # sleep interval in seconds used between iBUS reads
+TICK = 0.02     # sleep interval in seconds used between iBUS reads
 BLUETOOTH = False
 
 #####################################
@@ -101,10 +104,13 @@ def init(writer):
     SESSION_DATA["SPEED_SWITCH"] = False
 
     pB_display.immediateText('Control OK')
-    WRITER.writeBusPacket('3F', '00', ['0C', '4E', '01']) # Turn on the 'clown nose' for 3 seconds
+    # Turn on the 'clown nose' for 3 seconds
+    WRITER.writeBusPacket('3F', '00', ['0C', '4E', '01'])
 
 
-# Manage the packet, meaning traverse the JSON 'DIRECTIVES' object and attempt to determine a suitable function to pass the packet to.
+# Manage the packet, meaning :
+#   - traverse the JSON 'DIRECTIVES' object
+#   - attempt to determine a suitable function to pass the packet to.
 def manage(packet):
     src = packet['src']
     dst = packet['dst']
@@ -113,7 +119,7 @@ def manage(packet):
 
     try:
         dstDir = DIRECTIVES[src][dst]
-        if ('ALL'    in dstDir.keys()):
+        if ('ALL' in dstDir.keys()):
             methodName = dstDir['ALL']
         else:
             methodName = dstDir[dataString]
@@ -121,7 +127,7 @@ def manage(packet):
         pass
 
     result = None
-    if methodName != None:
+    if methodName is not None:
         methodToCall = globals().get(methodName, None)
         if methodToCall:
             logging.debug("Directive found for packet - %s" % methodName)
@@ -145,7 +151,7 @@ def listen():
         packet = WRITER.readBusPacket()
         if packet:
             manage(packet)
-        time.sleep(TICK) # sleep a bit
+        time.sleep(TICK)    # sleep a bit
 
 
 def shutDown():
@@ -177,13 +183,17 @@ class TriggerInit(Exception):
 ############################################################################
 def d_keyOut(packet):
     global SESSION_DATA
-    WRITER.writeBusPacket('3F','00', ['0C', '53', '01']) # Put up window 1
-    WRITER.writeBusPacket('3F','00', ['0C', '42', '01']) # Put up window 2
-    WRITER.writeBusPacket('3F','00', ['0C', '55', '01']) # Put up window 3
-    WRITER.writeBusPacket('3F','00', ['0C', '43', '01']) # Put up window 4
+    WRITER.writeBusPacket('3F', '00', ['0C', '53', '01'])   # Put up window 1
+    WRITER.writeBusPacket('3F', '00', ['0C', '42', '01'])   # Put up window 2
+    WRITER.writeBusPacket('3F', '00', ['0C', '55', '01'])   # Put up window 3
+    WRITER.writeBusPacket('3F', '00', ['0C', '43', '01'])   # Put up window 4
 
 
 def d_toggleSpeedSW(packet):
+    """
+    This function is deprecated and won't be called anymore
+    TODO : delete the code
+    """
     global SESSION_DATA
     SESSION_DATA['SPEED_SWITCH'] = not SESSION_DATA['SPEED_SWITCH']
     if SESSION_DATA['SPEED_SWITCH']:
@@ -202,7 +212,7 @@ def d_togglePlayPause(packet):
 def d_button5(packet):
     # TODO Implement a status updater using the tickUtil
     logging.info("UPDATE")
-    #pB_display.immediateText('UPDATING')
+    # pB_display.immediateText('UPDATING')
     pB_audio.update()
 
 
@@ -216,12 +226,15 @@ def d_button6(packet):
 # But the data for speed/rpm will vary, so it must be parsed via a method linked to 'ALL' data in the JSON DIRECTIVES
 def d_custom_IKE(packet):
     packet_data = packet['dat']
+
     # 18 : speed and RPM
     if packet_data[0] == '18':
         speed = int(packet_data[1], 16) * 2
         revs = int(packet_data[2], 16) * 10000
         customState = {'speed' : speed, 'revs' : revs}
-        speedTrigger(speed)    # This is a silly little thing for changing track based on speed ;)
+        speedTrigger(speed)
+        # This is a silly little thing for changing track based on speed ;)
+
     # 19 = Temperature
     elif packet_data[0] == '19':
         extTemp = int(packet_data[1], 16)
@@ -302,11 +315,17 @@ def d_cdRandom(packet):
 
 
 def d_button3(packet):
-    speedTrigger(110)
+
 
 
 # Do whatever you like here regarding the speed!
 def speedTrigger(speed):
+    """
+    DEPRECATED FUNCTION
+    Kept for unknown purposes
+    TODO : delete this code
+    """
+    # TO be called with : speedTrigger(110)
     global SESSION_DATA
     # This dictionary lists possible songs to play as well as times to skip to
     speedSongData = {
@@ -333,7 +352,7 @@ def d_toggleBluetooth(packet):
     # Stop playing and turn on Bluetooth
     if not BLUETOOTH:
             d_cdStopPlaying(packet)
-            pB_display.immediateText('Bluetooth : ON')
+            pB_display.immediateText('BT : ON')
             logging.info("Starting bluetooth-agent process...")
             p = Popen(["sudo", "service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             stdout, stderr = p.communicate()
@@ -349,7 +368,7 @@ def d_toggleBluetooth(packet):
 
     # Turn of bluetooth and resume playing
     else :
-            pB_display.immediateText('Bluetooth : OFF')
+            pB_display.immediateText('BT : OFF')
             logging.info("Stopping bluetooth-agent process...")
             p = Popen(["sudo", "service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             stdout, stderr = p.communicate()
@@ -365,7 +384,9 @@ def d_toggleBluetooth(packet):
             d_cdStartPlaying(packet)
 
 
-################## DIRECTIVE UTILITY FUNCTIONS ##################
+"""
+DIRECTIVE UTILITY FUNCTIONS
+"""
 # Write current track to display
 def writeCurrentTrack():
     cdSongHundreds, cdSong = _getTrackNumber()
@@ -389,7 +410,7 @@ def _getTrackInfoQue():
     if ('status' in status):
         mpdStatus = status['status']
         if ('song' in mpdStatus and 'playlistlength' in mpdStatus):
-            displayQue.append("%s of %s" % (int(mpdStatus['song'])+1, mpdStatus['playlistlength']))
+            displayQue.append("%s of %s" % (int(mpdStatus['song']) + 1, mpdStatus['playlistlength']))
     return displayQue
 
 
