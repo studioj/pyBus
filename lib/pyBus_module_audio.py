@@ -27,7 +27,7 @@ VOLUME   = 90
 CLIENT   = None
 T_STATUS = None
 
-rootDir     = '/home/pi/Music'
+rootDir     = '/home/pi/Music/Music'
 displayDir  = 'hello'
 
 # Choose to display when browsing : artist /title / (following TinyTag)
@@ -36,51 +36,58 @@ displaytype = 'title'
 #####################################
 # FUNCTIONS
 #####################################
-def mpdConnect(client, con_id):
-  try:
-    client.connect(**con_id)
-  except SocketError:
-    return False
-  return True
 
-# Updates MPD library
+
+def mpdConnect(client, con_id):
+    try:
+        client.connect(**con_id)
+    except SocketError:
+        logging.critical('   Caught SocketError')
+        return False
+    return True
+
 def update():
-   logging.info('Updating MPD Library')
-   CLIENT.update()
+# Updates MPD library
+    logging.info('Updating MPD Library')
+    CLIENT.update()
+
 
 def init():
-  global CLIENT
-  ## MPD object instance
-  CLIENT = MPDClient()
-  if mpdConnect(CLIENT, CON_ID):
-    logging.info('Connected to MPD server')
-    #CLIENT.setvol(100)
-    #repeat(True) # Repeat all tracks
-    update()
-  else:
-    logging.critical('Failed to connect to MPD server')
-    logging.critical("Sleeping 1 second and retrying")
-    time.sleep(1)
-    init()
+    global CLIENT
+    ## MPD object instance
+    CLIENT = MPDClient()
+    if mpdConnect(CLIENT, CON_ID):
+        logging.info('Connected to MPD server')
+        #CLIENT.setvol(100)
+        #repeat(True) # Repeat all tracks
+        update()
+    else:
+        logging.critical('Failed to connect to MPD server')
+        logging.critical("Sleeping 1 second and retrying")
+        time.sleep(1)
+        init()
 
 
 def quit():
-  if CLIENT:
-    CLIENT.disconnect()
+    if CLIENT:
+        CLIENT.disconnect()
+
 
 def playpause():
-  status = CLIENT.status()
-  if (status['state']=='play'):
-      CLIENT.pause()
-      return "Pause"
-  elif (status['state']=='stop' or status['state']=='pause'):
-      CLIENT.play()
-      return client.currentsong()['title']
+    status = CLIENT.status()
+    if (status['state']=='play'):
+        CLIENT.pause()
+        return "Pause"
+    elif (status['state']=='stop' or status['state']=='pause'):
+        CLIENT.play()
+        return CLIENT.currentsong()['title']
+
 
 def stop():
-  if CLIENT:
-    CLIENT.stop()
-    return 'Stopped'
+    if CLIENT:
+        CLIENT.stop()
+        return 'Stopped'
+
 
 def volumeUp():
     status = CLIENT.status()
@@ -93,6 +100,7 @@ def volumeUp():
         return "Vol max"
     CLIENT.setvol(volume)
 
+
 def volumeDown():
     status = CLIENT.status()
     volume = int(status['volume'])
@@ -104,44 +112,49 @@ def volumeDown():
         return "Vol off"
     CLIENT.setvol(volume)
 
+
 def next():
-  CLIENT.next()
-  return CLIENT.currentsong()['title']
+    CLIENT.next()
+    return CLIENT.currentsong()['title']
+
 
 def previous():
-  CLIENT.previous()
-  return CLIENT.currentsong()['title']
+    CLIENT.previous()
+    return CLIENT.currentsong()['title']
+
 
 def next_element(currentElement, up) :
- 	try :
- 		(_, dirnames, filenames) = iter(os.walk(os.path.dirname(currentElement))).next()
- 		dirnames.sort()
- 		filenames.sort()
- 		listElements = dirnames + filenames
- 	except StopIteration:
- 		# If directory to walk on does not exists :
- 		listElements = currentElement
+    try :
+        (_, dirnames, filenames) = iter(os.walk(os.path.dirname(currentElement))).next()
+        dirnames.sort()
+        filenames.sort()
+        listElements = dirnames + filenames
+    except StopIteration:
+        # If directory to walk on does not exists :
+        listElements = currentElement
 
- 	# Remove hidden elements (start with .)
- 	listElements = [x for x in listElements if not x.startswith('.')]
+    # Remove hidden elements (start with .)
+    listElements = [x for x in listElements if not x.startswith('.')]
 
- 	# Find the index in the list of the displayed name.
- 	(basepath, elementName) = os.path.split(currentElement)
- 	indexInList = listElements.index(elementName)
+    # Find the index in the list of the displayed name.
+    (basepath, elementName) = os.path.split(currentElement)
+    indexInList = listElements.index(elementName)
 
- 	# Set the way to parse the list.
- 	if not up :
- 		if indexInList != len(listElements) -1 :
- 			nextElement = listElements[indexInList+1]
- 		else :
- 			nextElement = listElements[0]
- 	else :
- 		if indexInList != 0 :
- 			nextElement = listElements[indexInList-1]
- 		else :
- 			nextElement = listElements[-1]
+    # Set the way to parse the list.
+    if not up :
+        if indexInList != len(listElements) -1 :
+            nextElement = listElements[indexInList+1]
+        else :
+            nextElement = listElements[0]
+    else :
+        if indexInList != 0 :
+            nextElement = listElements[indexInList-1]
+        else :
+            nextElement = listElements[-1]
+        toReturn = os.path.join(basepath, nextElement)
+        logging.debug("Returned %s" %toReturn)
+    return toReturn
 
- 	return os.path.join(basepath, nextElement)
 
 def plus() :
     global displayDir
@@ -152,7 +165,7 @@ def plus() :
         # Display the artist ID3 tag of the next song.
         tag = TinyTag.get(displayDir)
         if tag.title :
-            return tag.title	#getattr(self,displaytype)
+            return tag.title    #getattr(self,displaytype)
         else :
             return os.path.basename(displayDir)
     else :
@@ -165,23 +178,28 @@ def minus():
     if displayDir != rootDir :
         # Get the next elements in the same folder
         displayDir = next_element(displayDir, 1)
+        logging.debug("Next element is %s", displayDir)
 
     if displayDir.endswith('.mp3') :
         # Display the artist ID3 tag of the next song.
         tag = TinyTag.get(displayDir)
-        return tag.title	#getattr(self,displaytype)
+        return tag.title    #getattr(self,displaytype)
     else :
         #(_, toScreen )= os.path.split(displayDir)
         return os.path.split(displayDir)[0]
+
 
 def prevElement():
     global displayDir
     #print rootDir
     if displayDir != rootDir :
         displayDir = os.path.dirname(displayDir)
-        return os.path.basename(displayDir)
+        toReturn = os.path.basename(displayDir)
+        logging.debug("Dirname returned is %s", toReturn)
+        return toReturn
     # print displayDir
     # toScreen = os.path.basename(displayDir)
+
 
 def nextElement():
     global displayDir
@@ -238,62 +256,83 @@ def nextElement():
                     file2add = tempString
                 #print('file2add  \t%s' %file2add)
                 CLIENT.add(file2add)
+                logging.debug("Added file %s", file2add)
 
             CLIENT.play(indexFile)
-            return client.currentsong()['title']
+            return CLIENT.currentsong()['title']
 
 
 def repeat(repeat, toggle=False):
-  if toggle:
-    current = int(CLIENT.status()['repeat'])
-    repeat = (not current) # Love this
-  CLIENT.repeat(int(repeat))
-  return repeat
+    if toggle:
+        current = int(CLIENT.status()['repeat'])
+        repeat = (not current) # Love this
+    logging.debug("Set repeat to %s", repeat)
+    CLIENT.repeat(int(repeat))
+    return repeat
+
 
 def random(random, toggle=False):
-  if toggle:
-    current = int(CLIENT.status()['random'])
-    random = (not current) # Love this
-  CLIENT.random(int(random))
-  return random
+    if toggle:
+        current = int(CLIENT.status()['random'])
+        random = (not current) # Love this
+    logging.debug("Set random to %s", random)
+    CLIENT.random(int(random))
+    return random
+
 
 def seek(delta):
-  try:
-    seekDest = int(float(CLIENT.status()['elapsed']) + delta)
-    playListID = int(CLIENT.status()['song'])
-    CLIENT.seek(playListID, seekDest)
-  except Exception, e:
-    logging.warning("Issue seeking - elapsed key missing")
+    try:
+        seekDest = int(float(CLIENT.status()['elapsed']) + delta)
+        playListID = int(CLIENT.status()['song'])
+        CLIENT.seek(playListID, seekDest)
+    except Exception, e:
+        logging.warning("Issue seeking - elapsed key missing")
+
+
+def getTrackID():
+    if ("songid" not in CLIENT.status()):
+        logging.warning("MPD status does not contain songID. Please investigate following status:")
+        logging.warning(CLIENT.status())
+    try:
+        currentTID = CLIENT.status()['songid']
+        return currentTID
+    except e:
+        logging.warning("Unexpected Exception occured:")
+        logging.warning(traceback.format_exc())
+        return 0
+
 
 def getTrackInfo():
-  global T_STATUS
-  currentTID = getTrackID()
-  for song in PLAYLIST:
-    trackID = song["id"]
+    global T_STATUS
+    currentTID = getTrackID()
+    for song in PLAYLIST:
+        trackID = song["id"]
     if trackID == currentTID:
-      T_STATUS = song
+        T_STATUS = song
+
 
 def getInfo(lastID=-1):
-  global CLIENT
-  if CLIENT == None:
-    init()
-  state = None
-  while not state:
-    try:
-      state = CLIENT.status()
-    except Exception, e:
-      logging.warning("MPD lost connection while reading status")
-      time.sleep(.5)
-      CLIENT == None
+    global CLIENT
+    if CLIENT == None:
+        init()
+    state = None
+    while not state:
+        try:
+            state = CLIENT.status()
+        except Exception, e:
+            logging.warning("MPD lost connection while reading status")
+            time.sleep(.5)
+            CLIENT == None
+            init()
 
-  if (state['state'] != "stop"):
-    if ("songid" in state):
-      songID = state['songid']
-      if (songID != lastID):
-        getTrackInfo()
+    if (state['state'] != "stop"):
+        if ("songid" in state):
+            songID = state['songid']
+        if (songID != lastID):
+            getTrackInfo()
     if (T_STATUS == None):
-      getTrackInfo()
-  status = {"status": state, "track": T_STATUS}
-  logging.debug("Player Status Requested. Returning:")
-  logging.debug(status)
-  return status
+        getTrackInfo()
+    status = {"status": state, "track": T_STATUS}
+    logging.debug("Player Status Requested.")
+    logging.debug("Returning: %s" % status)
+    return status
