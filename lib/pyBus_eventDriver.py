@@ -12,8 +12,8 @@ from subprocess import Popen, PIPE
 
 # Imports for the project
 import pyBus_module_display as pB_display     # Only events can manipulate the display stack
-import pyBus_module_audio as pB_audio             # Add the audio module as it will only be manipulated from here in pyBus
-import pyBus_tickUtil as pB_ticker                    # Ticker for signals requiring intervals
+import pyBus_module_audio as pB_audio         # Add the audio module as it will only be manipulated from here in pyBus
+import pyBus_tickUtil as pB_ticker            # Ticker for signals requiring intervals
 
 # This module will read a packet, match it against the json object 'DIRECTIVES' below.
 # The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible
@@ -194,6 +194,7 @@ def d_toggleSpeedSW(packet):
 
 def d_togglePlayPause(packet):
     logging.info("Play/Pause")
+    # The function returns either PAUSED or the title
     toggle = pB_audio.playpause()
     pB_display.immediateText(toggle)
 

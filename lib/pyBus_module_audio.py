@@ -320,9 +320,10 @@ def getInfo(lastID=-1):
         try:
             state = CLIENT.status()
         except Exception, e:
-            logging.warning("MPD lost connection while reading status")
+            logging.warning("MPD lost connection while reading status :")
+            logging.warning("got error %s", e)
             time.sleep(.5)
-            CLIENT == None
+            CLIENT = None
             init()
 
     if (state['state'] != "stop"):
