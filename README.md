@@ -27,6 +27,9 @@ Functions foreseen :
 - [ ] (in progress) Integrate it into the pyBus
 - [ ] Test the integration with the actual CAN bus
 - [ ] Have fun
+- [ ] -> Setup a Fourrier display of the song :)
+- [ ] -> Setup a progress bar of the song
+- [ ] -> Set up turning icon on the console :)
 
 ## Controls
 
@@ -51,6 +54,8 @@ http://linux.die.net/man/5/mpd.conf
 http://miro.oorganica.com/raspberry-pi-mpd/   
 http://web.comhem.se/bengt-olof.swing/ibusdevicesandoperations.htm   
 https://pythonhosted.org/python-mpd2/
+List of char displayable on the screen :
+https://www.youtube.com/watch?v=MoEVNWlOVfo
 
 ### Warning
 All software is in early alpha stages!
