@@ -261,14 +261,16 @@ def d_cdScanForward(packet):
     if not BLUETOOTH:
         cdSongHundreds, cdSong = _getTrackNumber()
         if "".join(packet['dat']) == "380401":
-            WRITER.writeBusPacket('18', '68', ['39', '03', '09', '00', '3F', '00', cdSongHundreds, cdSong])    # Fast forward scan signal
+            # Fast forward scan signal
+            WRITER.writeBusPacket('18', '68', ['39', '03', '09', '00', '3F', '00', cdSongHundreds, cdSong])
             pB_ticker.enableFunc("scanForward", 0.2)
 
 
 def d_cdScanBackward(packet):
     if not BLUETOOTH:
         cdSongHundreds, cdSong = _getTrackNumber()
-        WRITER.writeBusPacket('18', '68', ['39', '04', '09', '00', '3F', '00', cdSongHundreds, cdSong])    # Fast backward scan signal
+        # Fast backward scan signal
+        WRITER.writeBusPacket('18', '68', ['39', '04', '09', '00', '3F', '00', cdSongHundreds, cdSong])
         if "".join(packet['dat']) == "380400":
             pB_ticker.enableFunc("scanBackward", 0.2)
 
