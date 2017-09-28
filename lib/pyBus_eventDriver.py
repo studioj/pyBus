@@ -11,8 +11,9 @@ import traceback
 from subprocess import Popen, PIPE
 
 import pyBus_module_display as pB_display     # Only events can manipulate the display stack
-import pyBus_module_audio as pB_audio             # Add the audio module as it will only be manipulated from here in pyBus
-import pyBus_tickUtil as pB_ticker                    # Ticker for signals requiring intervals
+import pyBus_module_audio as pB_audio         # Add the audio module as it will only be manipulated from here in pyBus
+import pyBus_module_audio2 as pB_audio2         # Add the audio module as it will only be manipulated from here in pyBus
+import pyBus_tickUtil as pB_ticker            # Ticker for signals requiring intervals
 
 # This module will read a packet, match it against the json object 'DIRECTIVES' below.
 # The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible
