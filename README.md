@@ -24,10 +24,10 @@ Functions foreseen :
 ## Tasks
 - [x] Configure bluetooth for auto-pairing with any device
 - [x] Develop the mpd client to control the audio
-- [ ] (in progress) Integrate it into the pyBus
-- [ ] Test the integration with the actual CAN bus
+- [x] Integrate it into the pyBus
+- [ ] (in progress) Test the integration with the actual CAN bus
 - [ ] Have fun
-- [ ] -> Setup a Fourrier display of the song :)
+- [ ] -> Setup a Fourier display of the song :)
 - [ ] -> Setup a progress bar of the song
 - [ ] -> Set up turning icon on the console :)
 
@@ -81,3 +81,7 @@ Soooon..
 *  `-v`, `--verbose` : Increases verbosity of logging (up to `-vvvv` : info logging).
 *  `-d DEVICE`, `--device DEVICE` :   Path to iBus USB interface (Bought from reslers.de)
 *  `-o OUTPUT_FILE`, `--output_file OUTPUT_FILE` : Path/Name of log file (log level of 0). If no file specified, output only to std.out
+
+
+## Misc
+Picture and Video will arrive... as soon as I found them :P
