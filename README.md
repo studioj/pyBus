@@ -82,6 +82,13 @@ Soooon..
 *  `-d DEVICE`, `--device DEVICE` :   Path to iBus USB interface (Bought from reslers.de)
 *  `-o OUTPUT_FILE`, `--output_file OUTPUT_FILE` : Path/Name of log file (log level of 0). If no file specified, output only to std.out
 
+#### CAN bus properties
+Serial communications on the bus are :
+* 9600 bps
+* 8 data bits
+* Even parity
+* 1 stop bit
+
 
 ## Misc
 Picture and Video will arrive... as soon as I found them :P
