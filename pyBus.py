@@ -1,16 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import argparse
+import logging
 import os
+import signal
 import sys
 import time
-import signal
 import traceback
-import logging
 from logging import handlers
-import argparse
-import gzip
+
 import pyBus_core as core
+
 
 #####################################
 # FUNCTIONS
@@ -23,7 +24,6 @@ def signal_handler_quit(signal, frame):
     sys.exit(0)
 
 
-
 #################################
 # LOGGING
 #################################
@@ -31,15 +31,16 @@ def signal_handler_quit(signal, frame):
 # Convert verbose count in loggin level for the loggin module
 def logging_level(verbosity):
     levels = [
-        logging.CRITICAL,   # 50
-        logging.ERROR,      # 40
-        logging.WARNING,    # 30
-        logging.INFO,       # 20
-        logging.DEBUG       # 10
+        logging.CRITICAL,  # 50
+        logging.ERROR,  # 40
+        logging.WARNING,  # 30
+        logging.INFO,  # 20
+        logging.DEBUG  # 10
     ]
     return levels[max(min(len(levels) - 1, verbosity), 0)]
 
-def configureLogging(numeric_level,logfile):
+
+def configureLogging(numeric_level, logfile):
     ## VARIABLES
     format_entry = '%(asctime)s.%(msecs)03d | %(module)-17s [%(levelname)-8s] %(message)s'
     format_date = '%Y-%m-%d %H:%M:%S'
@@ -57,7 +58,7 @@ def configureLogging(numeric_level,logfile):
     logger.addHandler(consolehandler)
 
     # Logging to file is provided
-    if logfile :
+    if logfile:
         # Put the right filename to core.LOGFILE
         core.LOGFILE = logfile
         # Use rotating files : 1 per day, and all are kept (no rotation thus)
@@ -72,19 +73,21 @@ def configureLogging(numeric_level,logfile):
 
     logging.info("Logging level set to %s", logging_level(numeric_level))
 
+
 #################################
 # Program options
 #################################
 def createParser():
-    parser = argparse.ArgumentParser(epilog="If you have any questions : https://github.com/vonStauffenFeld/pyBus",\
+    parser = argparse.ArgumentParser(epilog="If you have any questions : https://github.com/vonStauffenFeld/pyBus", \
                                      description="This is %(prog)s, the programm to turn a RapsberryPi into an mp3 player for a BMW E46")
-    parser.add_argument('-v', '--verbose', action='count', default=0,\
+    parser.add_argument('-v', '--verbose', action='count', default=0, \
                         help='Increases verbosity of logging (up to -vvvv).')
-    parser.add_argument('-d', '--device', action='store', default='/dev/ttyUSB0',\
-                      help='Path to iBus USB interface (Bought from reslers.de)')
-    parser.add_argument('-o', '--output_file', action='store', default='',\
-                      help='Path/Name of log file (log level of 0). If no file specified, output only to std.out')
+    parser.add_argument('-d', '--device', action='store', default='/dev/ttyUSB0', \
+                        help='Path to iBus USB interface (Bought from reslers.de)')
+    parser.add_argument('-o', '--output_file', action='store', default='', \
+                        help='Path/Name of log file (log level of 0). If no file specified, output only to std.out')
     return parser
+
 
 def restart():
     args = sys.argv[:]
@@ -95,12 +98,13 @@ def restart():
     os.chdir(_startup_cwd)
     os.execv(sys.executable, args)
 
+
 #####################################
 # MAIN
 #####################################
-parser       = createParser()
-results      = parser.parse_args()
-loglevel     = results.verbose
+parser = createParser()
+results = parser.parse_args()
+loglevel = results.verbose
 core.DEVPATH = results.device
 _startup_cwd = os.getcwd()
 
