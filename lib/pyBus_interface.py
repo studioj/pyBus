@@ -127,7 +127,7 @@ class ibusFace():
         char = self.SDEV.read(1)
         try:
             char = '%02X' % ord(char)
-        except SerialException, e:
+        except serial.SerialException, e:
             logging.warning("Hit a serialException: %s" % e)
             pass
         return char
@@ -168,7 +168,7 @@ class ibusFace():
         packet[lastInd] = chk  # packet is an array of int
 
         packetSent = False
-        while (not packetSent):
+        while not packetSent:
             logging.debug("WRITE: %s" % packet)
             if (self.SDEV.getCTS()) and ((int(round(time.time() * 1000)) - self.SDEV.lastWrite) > 10):
                 # Do not write packets too close together.. issues arise
