@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-import os, sys, time, signal, json, logging, traceback
+import logging
+import sys
 import threading
 
-import pyBus_module_display as pB_display # Only events can manipulate the display stack
-import pyBus_module_audio as pB_audio # Add the audio module as it will only be manipulated from here in pyBus
+import pyBus_module_audio as pB_audio  # Add the audio module as it will only be manipulated from here in pyBus
 
 # This module will read a packet, match it against the json object 'DIRECTIVES' below.
 # The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible
@@ -24,6 +24,7 @@ import pyBus_module_audio as pB_audio # Add the audio module as it will only be 
 WRITER = None
 STATE_DATA = {}
 FUNC_STACK = {}
+
 
 #####################################
 # FUNCTIONS
@@ -52,12 +53,12 @@ def enableFunc(funcName, interval, count=0):
     # Rather than updating the spec, just run a new thread.
     if getattr(sys.modules[__name__], funcName):
         FUNC_STACK[funcName] = {
-                "COUNT": count,
-                "INTERVAL": interval,
-                "THREAD": threading.Timer(
-                        interval,
-                        revive, [funcName]
-                )
+            "COUNT": count,
+            "INTERVAL": interval,
+            "THREAD": threading.Timer(
+                interval,
+                revive, [funcName]
+            )
         }
         logging.debug("Enabling New Thread:\n%s %s" % (funcName, FUNC_STACK[funcName]))
         worker_func = getattr(sys.modules[__name__], funcName)
@@ -74,6 +75,7 @@ def disableFunc(funcName):
         if thread: thread.cancel()
         del FUNC_STACK[funcName]
 
+
 def disableAllFunc():
     global FUNC_STACK
     for funcName in FUNC_STACK:
@@ -82,10 +84,11 @@ def disableAllFunc():
         thread.cancel()
     FUNC_STACK = {}
 
-#------------------------------------
+
+# ------------------------------------
 # THREAD FOR TICKING AND CHECKING EVENTS
 # Calls itself again
-#------------------------------------
+# ------------------------------------
 def revive(funcName):
     global FUNC_STACK
     funcSpec = FUNC_STACK.get(funcName, None)
@@ -93,9 +96,11 @@ def revive(funcName):
         count = funcSpec["COUNT"]
         if count != 1:
             FUNC_STACK[funcName]["COUNT"] = count - 1
-            funcSpec["THREAD"].cancel() # Kill off this thread just in case..
-            enableFunc(funcName, funcSpec["INTERVAL"]) # REVIVE!
-#------------------------------------
+            funcSpec["THREAD"].cancel()  # Kill off this thread just in case..
+            enableFunc(funcName, funcSpec["INTERVAL"])  # REVIVE!
+
+
+# ------------------------------------
 
 #####################################
 # Tick Functions
@@ -111,7 +116,8 @@ def scanBackward():
 
 
 def pollResponse():
-    WRITER.writeBusPacket('18', 'FF', ['02','00'])
+    WRITER.writeBusPacket('18', 'FF', ['02', '00'])
+
 
 def announce():
     WRITER.writeBusPacket('18', 'FF', ['02', '01'])
