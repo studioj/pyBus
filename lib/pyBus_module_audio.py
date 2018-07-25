@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # Use of python-mpd2 for better documentation.
-import pprint, os, sys, time, signal, logging
-from mpd import (MPDClient, CommandError)
+import logging
+import os
+import time
 from socket import error as SocketError
-import pyBus_core as core
+
+from mpd import (MPDClient)
 from tinytag import TinyTag
-from subprocess import Popen, PIPE
 
 # TODO add long push and short push to add functions
 # TODO Beware of the path of the files
@@ -18,20 +19,21 @@ from subprocess import Popen, PIPE
 #####################################
 # GLOBALS
 #####################################
-HOST     = 'localhost'
-PORT     = '6600'
+HOST = 'localhost'
+PORT = '6600'
 PASSWORD = False
-CON_ID   = {'host':HOST, 'port':PORT}
-VOLUME   = 90
+CON_ID = {'host': HOST, 'port': PORT}
+VOLUME = 90
 
-CLIENT   = None
+CLIENT = None
 T_STATUS = None
 
-rootDir     = '/home/pi/Music/Music'
-displayDir  = 'hello'
+rootDir = '/home/pi/Music/Music'
+displayDir = 'hello'
 
 # Choose to display when browsing : artist /title / (following TinyTag)
 displaytype = 'title'
+
 
 #####################################
 # FUNCTIONS
@@ -46,8 +48,9 @@ def mpdConnect(client, con_id):
         return False
     return True
 
+
 def update():
-# Updates MPD library
+    # Updates MPD library
     logging.info('Updating MPD Library')
     CLIENT.update()
 
@@ -58,8 +61,8 @@ def init():
     CLIENT = MPDClient()
     if mpdConnect(CLIENT, CON_ID):
         logging.info('Connected to MPD server')
-        #CLIENT.setvol(100)
-        #repeat(True) # Repeat all tracks
+        # CLIENT.setvol(100)
+        # repeat(True) # Repeat all tracks
         update()
     else:
         logging.critical('Failed to connect to MPD server')
@@ -75,10 +78,10 @@ def quit():
 
 def playpause():
     status = CLIENT.status()
-    if (status['state']=='play'):
+    if (status['state'] == 'play'):
         CLIENT.pause()
         return "Pause"
-    elif (status['state']=='stop' or status['state']=='pause'):
+    elif (status['state'] == 'stop' or status['state'] == 'pause'):
         CLIENT.play()
         return CLIENT.currentsong()['title']
 
@@ -94,8 +97,8 @@ def volumeUp():
     volume = int(status['volume'])
     if (volume < 95):
         volume += 5
-        return "Vol "+ str(volume)
-    else :
+        return "Vol " + str(volume)
+    else:
         volume = 100
         return "Vol max"
     CLIENT.setvol(volume)
@@ -106,8 +109,8 @@ def volumeDown():
     volume = int(status['volume'])
     if (volume > 5):
         volume -= 5
-        return "Vol "+ str(volume)
-    else :
+        return "Vol " + str(volume)
+    else:
         volume = 0
         return "Vol off"
     CLIENT.setvol(volume)
@@ -123,8 +126,8 @@ def previous():
     return CLIENT.currentsong()['title']
 
 
-def next_element(currentElement, up) :
-    try :
+def next_element(currentElement, up):
+    try:
         (_, dirnames, filenames) = iter(os.walk(os.path.dirname(currentElement))).next()
         dirnames.sort()
         filenames.sort()
@@ -141,58 +144,58 @@ def next_element(currentElement, up) :
     indexInList = listElements.index(elementName)
 
     # Set the way to parse the list.
-    if not up :
-        if indexInList != len(listElements) -1 :
-            nextElement = listElements[indexInList+1]
-        else :
+    if not up:
+        if indexInList != len(listElements) - 1:
+            nextElement = listElements[indexInList + 1]
+        else:
             nextElement = listElements[0]
-    else :
-        if indexInList != 0 :
-            nextElement = listElements[indexInList-1]
-        else :
+    else:
+        if indexInList != 0:
+            nextElement = listElements[indexInList - 1]
+        else:
             nextElement = listElements[-1]
         toReturn = os.path.join(basepath, nextElement)
-        logging.debug("Returned %s" %toReturn)
+        logging.debug("Returned %s" % toReturn)
     return toReturn
 
 
-def plus() :
+def plus():
     global displayDir
-    if displayDir != rootDir :
+    if displayDir != rootDir:
         displayDir = next_element(displayDir, 0)
-    #print displayDir
-    if displayDir.endswith('.mp3') :
+    # print displayDir
+    if displayDir.endswith('.mp3'):
         # Display the artist ID3 tag of the next song.
         tag = TinyTag.get(displayDir)
-        if tag.title :
-            return tag.title    #getattr(self,displaytype)
-        else :
+        if tag.title:
+            return tag.title  # getattr(self,displaytype)
+        else:
             return os.path.basename(displayDir)
-    else :
-        #(_, toScreen )= os.path.split(displayDir)
+    else:
+        # (_, toScreen )= os.path.split(displayDir)
         return os.path.split(displayDir)[0]
 
 
 def minus():
     global displayDir
-    if displayDir != rootDir :
+    if displayDir != rootDir:
         # Get the next elements in the same folder
         displayDir = next_element(displayDir, 1)
         logging.debug("Next element is %s", displayDir)
 
-    if displayDir.endswith('.mp3') :
+    if displayDir.endswith('.mp3'):
         # Display the artist ID3 tag of the next song.
         tag = TinyTag.get(displayDir)
-        return tag.title    #getattr(self,displaytype)
-    else :
-        #(_, toScreen )= os.path.split(displayDir)
+        return tag.title  # getattr(self,displaytype)
+    else:
+        # (_, toScreen )= os.path.split(displayDir)
         return os.path.split(displayDir)[0]
 
 
 def prevElement():
     global displayDir
-    #print rootDir
-    if displayDir != rootDir :
+    # print rootDir
+    if displayDir != rootDir:
         displayDir = os.path.dirname(displayDir)
         toReturn = os.path.basename(displayDir)
         logging.debug("Dirname returned is %s", toReturn)
@@ -203,34 +206,34 @@ def prevElement():
 
 def nextElement():
     global displayDir
-    if os.path.isdir(displayDir) :
-    # if folder, enter it
+    if os.path.isdir(displayDir):
+        # if folder, enter it
         sortedFileList = sorted(os.listdir(displayDir))
         # Check is not empty folder.
         if sortedFileList != []:
-            #remove items beginning with '.'
-            sortedFileList = [x for x in sortedFileList if not x.startswith('.') ]
-            #print sortedFileList
+            # remove items beginning with '.'
+            sortedFileList = [x for x in sortedFileList if not x.startswith('.')]
+            # print sortedFileList
 
-            firstElement = os.path.join(displayDir,sortedFileList[0])
-            if os.path.isdir(firstElement) :
-                #print('firstFolder \t%s' %os.path.relpath(firstElement, displayDir))
+            firstElement = os.path.join(displayDir, sortedFileList[0])
+            if os.path.isdir(firstElement):
+                # print('firstFolder \t%s' %os.path.relpath(firstElement, displayDir))
                 return os.path.basename(firstElement)
-                #print('toScreen \t%s' %toScreen)
-            else :
+                # print('toScreen \t%s' %toScreen)
+            else:
                 (_, file_extension) = os.path.splitext(firstElement)
-                if file_extension == '.mp3' :
+                if file_extension == '.mp3':
                     tag = TinyTag.get(firstElement)
-                    if tag.title :
+                    if tag.title:
                         return tag.title
-                    else :
+                    else:
                         return os.path.basename(firstElement)
             displayDir = firstElement
 
-    elif (os.path.isfile(displayDir) ):
+    elif (os.path.isfile(displayDir)):
 
         (_, file_extension) = os.path.splitext(displayDir)
-        if file_extension == '.mp3' :
+        if file_extension == '.mp3':
             # if .mp3 file, clear next tracks, add it and play it
             CLIENT.clear()
 
@@ -245,16 +248,16 @@ def nextElement():
             indexFile = filenames.index(fileName)
 
             # Add the next songs in the playlist (+1 because current file already added)
-            for index in range(0, len(filenames)) :
-                #print('index  \t%s' %index)
+            for index in range(0, len(filenames)):
+                # print('index  \t%s' %index)
                 file2add = os.path.join(os.path.relpath(absDirName, rootDir), filenames[index])
 
                 # Remove './' if files begins with it.
-                if file2add[0:2] == "./" :
+                if file2add[0:2] == "./":
                     tempString = ''
                     tempString = file2add[2:]
                     file2add = tempString
-                #print('file2add  \t%s' %file2add)
+                # print('file2add  \t%s' %file2add)
                 CLIENT.add(file2add)
                 logging.debug("Added file %s", file2add)
 
@@ -265,7 +268,7 @@ def nextElement():
 def repeat(repeat, toggle=False):
     if toggle:
         current = int(CLIENT.status()['repeat'])
-        repeat = (not current) # Love this
+        repeat = (not current)  # Love this
     logging.debug("Set repeat to %s", repeat)
     CLIENT.repeat(int(repeat))
     return repeat
@@ -274,7 +277,7 @@ def repeat(repeat, toggle=False):
 def random(random, toggle=False):
     if toggle:
         current = int(CLIENT.status()['random'])
-        random = (not current) # Love this
+        random = (not current)  # Love this
     logging.debug("Set random to %s", random)
     CLIENT.random(int(random))
     return random
