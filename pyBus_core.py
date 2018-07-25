@@ -1,18 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import logging
 import os
 import sys
-import time
-
-from lib.pyBus_interface import ibusFace
-
-sys.path.append('./lib/')
 
 # Here we import the two types of drivers. The event driven driver, and the ticking driver.
-import pyBus_eventDriver as pB_eDriver  # For responding to signals
-from pyBus_interface import *
+import lib.pyBus_eventDriver as pB_eDriver  # For responding to signals
+from lib.pyBus_interface import *
+
+sys.path.append('./lib/')
 
 #####################################
 # GLOBALS
