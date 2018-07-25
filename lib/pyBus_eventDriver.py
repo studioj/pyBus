@@ -1,19 +1,15 @@
 #!/usr/bin/python
 
-import os
-import sys
-import time
-import json
-import signal
-import random
 import logging
+import random
+import time
 import traceback
 from subprocess import Popen, PIPE
 
+import pyBus_module_audio as pB_audio  # Add the audio module as it will only be manipulated from here in pyBus
 # Imports for the project
-import pyBus_module_display as pB_display     # Only events can manipulate the display stack
-import pyBus_module_audio as pB_audio         # Add the audio module as it will only be manipulated from here in pyBus
-import pyBus_tickUtil as pB_ticker            # Ticker for signals requiring intervals
+import pyBus_module_display as pB_display  # Only events can manipulate the display stack
+import pyBus_tickUtil as pB_ticker  # Ticker for signals requiring intervals
 
 # This module will read a packet, match it against the json object 'DIRECTIVES' below.
 # The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible
@@ -36,12 +32,12 @@ DIRECTIVES = {
     },
     '80': {
         'BF': {
-            'ALL': 'd_custom_IKE'        # Use ALL to send all data to a particular function
+            'ALL': 'd_custom_IKE'  # Use ALL to send all data to a particular function
         }
     },
     '68': {
         '18': {
-            '01':     'd_cdPollResponse',
+            '01': 'd_cdPollResponse',
             '380000': 'd_cdSendStatus',
             '380100': 'd_cdStopPlaying',
             '380300': 'd_cdStartPlaying',
@@ -49,39 +45,40 @@ DIRECTIVES = {
             '380A01': 'd_cdPrev',
             '380700': '',
             '380701': '',
-            '380601': 'd_toggleSpeedSW',       # 1 pressed
-            '380602': 'd_togglePlayPause',     # 2 pressed
-            '380603': 'd_button3',             # 3 pressed
-            '380604': 'd_button4',             # 4 pressed
-            '380605': 'd_button5',             # 5 pressed
-            '380606': 'd_toggleBluetooth',     # 6 pressed
-            '380400': '',                      # prev Playlist function?
-            '380401': '',                      # next Playlist function?
-            '380800': 'd_cdRandom',            # RND pressed
-            '380801': 'd_cdRandom'             #
+            '380601': 'd_toggleSpeedSW',  # 1 pressed
+            '380602': 'd_togglePlayPause',  # 2 pressed
+            '380603': 'd_button3',  # 3 pressed
+            '380604': 'd_button4',  # 4 pressed
+            '380605': 'd_button5',  # 5 pressed
+            '380606': 'd_toggleBluetooth',  # 6 pressed
+            '380400': '',  # prev Playlist function?
+            '380401': '',  # next Playlist function?
+            '380800': 'd_cdRandom',  # RND pressed
+            '380801': 'd_cdRandom'  #
         }
     },
     '50': {
         'C8': {
-            '01':   'd_cdPollResponse',     # This can happen via RT button or ignition
-            '3B40': 'd_button6',            #
-            '3B80': 'd_buttonRT',           #
-            '3B90': 'd_buttonVoiceHold'     #
+            '01': 'd_cdPollResponse',  # This can happen via RT button or ignition
+            '3B40': 'd_button6',  #
+            '3B80': 'd_buttonRT',  #
+            '3B90': 'd_buttonVoiceHold'  #
         },
         # Multifunction steering wheel
         '68': {
-            '3211': 'd_buttonPlus',         # + pressed
-            '3210': 'd_buttonMinus',        # - pressed
-            '3B01': 'd_buttonNext',         # > pressed
-            '3B08': 'd_buttonPrev'          # < pressed
+            '3211': 'd_buttonPlus',  # + pressed
+            '3210': 'd_buttonMinus',  # - pressed
+            '3B01': 'd_buttonNext',  # > pressed
+            '3B08': 'd_buttonPrev'  # < pressed
         }
     }
 }
 
 WRITER = None
 SESSION_DATA = {}
-TICK = 0.02 # sleep interval in seconds used between iBUS reads
+TICK = 0.02  # sleep interval in seconds used between iBUS reads
 BLUETOOTH = False
+
 
 #####################################
 # FUNCTIONS
@@ -101,7 +98,7 @@ def init(writer):
     SESSION_DATA["SPEED_SWITCH"] = False
 
     pB_display.immediateText('Control OK')
-    WRITER.writeBusPacket('3F', '00', ['0C', '4E', '01']) # Turn on the 'clown nose' for 3 seconds
+    WRITER.writeBusPacket('3F', '00', ['0C', '4E', '01'])  # Turn on the 'clown nose' for 3 seconds
 
 
 # Manage the packet, meaning traverse the JSON 'DIRECTIVES' object and attempt to determine a suitable function to pass the packet to.
@@ -113,7 +110,7 @@ def manage(packet):
 
     try:
         dstDir = DIRECTIVES[src][dst]
-        if ('ALL'    in dstDir.keys()):
+        if ('ALL' in dstDir.keys()):
             methodName = dstDir['ALL']
         else:
             methodName = dstDir[dataString]
@@ -145,7 +142,7 @@ def listen():
         packet = WRITER.readBusPacket()
         if packet:
             manage(packet)
-        time.sleep(TICK) # sleep a bit
+        time.sleep(TICK)  # sleep a bit
 
 
 def shutDown():
@@ -164,6 +161,7 @@ class TriggerRestart(Exception):
 class TriggerInit(Exception):
     pass
 
+
 ############################################################################
 # FROM HERE ON ARE THE DIRECTIVES
 # DIRECTIVES ARE WHAT I CALL SMALL FUNCTIONS WHICH ARE INVOKED WHEN A
@@ -177,10 +175,10 @@ class TriggerInit(Exception):
 ############################################################################
 def d_keyOut(packet):
     global SESSION_DATA
-    WRITER.writeBusPacket('3F','00', ['0C', '53', '01']) # Put up window 1
-    WRITER.writeBusPacket('3F','00', ['0C', '42', '01']) # Put up window 2
-    WRITER.writeBusPacket('3F','00', ['0C', '55', '01']) # Put up window 3
-    WRITER.writeBusPacket('3F','00', ['0C', '43', '01']) # Put up window 4
+    WRITER.writeBusPacket('3F', '00', ['0C', '53', '01'])  # Put up window 1
+    WRITER.writeBusPacket('3F', '00', ['0C', '42', '01'])  # Put up window 2
+    WRITER.writeBusPacket('3F', '00', ['0C', '55', '01'])  # Put up window 3
+    WRITER.writeBusPacket('3F', '00', ['0C', '43', '01'])  # Put up window 4
 
 
 def d_toggleSpeedSW(packet):
@@ -202,7 +200,7 @@ def d_togglePlayPause(packet):
 def d_button5(packet):
     # TODO Implement a status updater using the tickUtil
     logging.info("UPDATE")
-    #pB_display.immediateText('UPDATING')
+    # pB_display.immediateText('UPDATING')
     pB_audio.update()
 
 
@@ -220,13 +218,13 @@ def d_custom_IKE(packet):
     if packet_data[0] == '18':
         speed = int(packet_data[1], 16) * 2
         revs = int(packet_data[2], 16) * 10000
-        customState = {'speed' : speed, 'revs' : revs}
-        speedTrigger(speed)    # This is a silly little thing for changing track based on speed ;)
+        customState = {'speed': speed, 'revs': revs}
+        speedTrigger(speed)  # This is a silly little thing for changing track based on speed ;)
     # 19 = Temperature
     elif packet_data[0] == '19':
         extTemp = int(packet_data[1], 16)
         oilTemp = int(packet_data[2], 16)
-        customState = {'extTemp' : extTemp, 'oilTemp' : oilTemp}
+        customState = {'extTemp': extTemp, 'oilTemp': oilTemp}
 
 
 def d_cdNext(packet):
@@ -248,14 +246,14 @@ def d_cdScanForward(packet):
     if not BLUETOOTH:
         cdSongHundreds, cdSong = _getTrackNumber()
         if "".join(packet['dat']) == "380401":
-            WRITER.writeBusPacket('18', '68', ['39', '03', '09', '00', '3F', '00', cdSongHundreds, cdSong])    # Fast forward scan signal
+            WRITER.writeBusPacket('18', '68', ['39', '03', '09', '00', '3F', '00', cdSongHundreds, cdSong])  # Fast forward scan signal
             pB_ticker.enableFunc("scanForward", 0.2)
 
 
 def d_cdScanBackward(packet):
     if not BLUETOOTH:
         cdSongHundreds, cdSong = _getTrackNumber()
-        WRITER.writeBusPacket('18', '68', ['39', '04', '09', '00', '3F', '00', cdSongHundreds, cdSong])    # Fast backward scan signal
+        WRITER.writeBusPacket('18', '68', ['39', '04', '09', '00', '3F', '00', cdSongHundreds, cdSong])  # Fast backward scan signal
         if "".join(packet['dat']) == "380400":
             pB_ticker.enableFunc("scanBackward", 0.2)
 
@@ -285,7 +283,7 @@ def d_cdSendStatus(packet):
 
 # Respond to the Poll for changer alive
 def d_cdPollResponse(packet):
-    pB_ticker.disableFunc("announce")    # stop announcing
+    pB_ticker.disableFunc("announce")  # stop announcing
     pB_ticker.disableFunc("pollResponse")
     pB_ticker.enableFunc("pollResponse", 30)
 
@@ -316,14 +314,14 @@ def speedTrigger(speed):
     }
     if (speed > 100) and SESSION_DATA['SPEED_SWITCH']:
         songNames = speedSongData.keys()
-        songIndex = random.randint(0, len(songNames)-1)
+        songIndex = random.randint(0, len(songNames) - 1)
         songName = songNames[songIndex]
         pB_audio.playSong(songName)
         pB_audio.seek(speedSongData[songName])
-        WRITER.writeBusPacket('3F','00', ['0C', '52', '01'])
-        WRITER.writeBusPacket('3F','00', ['0C', '41', '01'])
-        WRITER.writeBusPacket('3F','00', ['0C', '54', '01'])
-        WRITER.writeBusPacket('3F','00', ['0C', '44', '01'])
+        WRITER.writeBusPacket('3F', '00', ['0C', '52', '01'])
+        WRITER.writeBusPacket('3F', '00', ['0C', '41', '01'])
+        WRITER.writeBusPacket('3F', '00', ['0C', '54', '01'])
+        WRITER.writeBusPacket('3F', '00', ['0C', '44', '01'])
 
 
 def d_toggleBluetooth(packet):
@@ -332,37 +330,37 @@ def d_toggleBluetooth(packet):
 
     # Stop playing and turn on Bluetooth
     if not BLUETOOTH:
-            d_cdStopPlaying(packet)
-            pB_display.immediateText('Bluetooth : ON')
-            logging.info("Starting bluetooth-agent process...")
-            p = Popen(["sudo", "service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            stdout, stderr = p.communicate()
-            errcode = p.returncode
+        d_cdStopPlaying(packet)
+        pB_display.immediateText('Bluetooth : ON')
+        logging.info("Starting bluetooth-agent process...")
+        p = Popen(["sudo", "service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        stdout, stderr = p.communicate()
+        errcode = p.returncode
 
-            if errcode != 0 :
-                    logging.error("Error while starting bluetooth-agent")
-                    logging.error(" - stderr : %s" %stderr)
-                    logging.error(" - stdout : %s" %stdout)
+        if errcode != 0:
+            logging.error("Error while starting bluetooth-agent")
+            logging.error(" - stderr : %s" % stderr)
+            logging.error(" - stdout : %s" % stdout)
 
-            logging.info("Starting bluetooth-agent process... OK")
-            BLUETOOTH = True
+        logging.info("Starting bluetooth-agent process... OK")
+        BLUETOOTH = True
 
     # Turn of bluetooth and resume playing
-    else :
-            pB_display.immediateText('Bluetooth : OFF')
-            logging.info("Stopping bluetooth-agent process...")
-            p = Popen(["sudo", "service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            stdout, stderr = p.communicate()
-            errcode = p.returncode
+    else:
+        pB_display.immediateText('Bluetooth : OFF')
+        logging.info("Stopping bluetooth-agent process...")
+        p = Popen(["sudo", "service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        stdout, stderr = p.communicate()
+        errcode = p.returncode
 
-            if errcode != 0 :
-                    logging.error("Error while stopping bluetooth-agent")
-                    logging.error(" - stderr : %s" %stderr)
-                    logging.error(" - stdout : %s" %stdout)
+        if errcode != 0:
+            logging.error("Error while stopping bluetooth-agent")
+            logging.error(" - stderr : %s" % stderr)
+            logging.error(" - stdout : %s" % stdout)
 
-            logging.info("Stopping bluetooth-agent process... OK")
-            BLUETOOTH = False
-            d_cdStartPlaying(packet)
+        logging.info("Stopping bluetooth-agent process... OK")
+        BLUETOOTH = False
+        d_cdStartPlaying(packet)
 
 
 ################## DIRECTIVE UTILITY FUNCTIONS ##################
@@ -389,7 +387,7 @@ def _getTrackInfoQue():
     if ('status' in status):
         mpdStatus = status['status']
         if ('song' in mpdStatus and 'playlistlength' in mpdStatus):
-            displayQue.append("%s of %s" % (int(mpdStatus['song'])+1, mpdStatus['playlistlength']))
+            displayQue.append("%s of %s" % (int(mpdStatus['song']) + 1, mpdStatus['playlistlength']))
     return displayQue
 
 
