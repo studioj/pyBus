@@ -1,6 +1,7 @@
 import logging
-import serial
 import time
+
+import serial
 
 # LOCATIONS, a mapping of hex codes seen in SRC/DST parts of packets. This WILL change across models/years.
 LOCATIONS = {
@@ -160,27 +161,24 @@ class ibusFace():
             packet.append(p)
         logging.debug("WRITE: Adding to stack: %s" % packet)
         for i in range(len(packet)):
+            packet[i] = int('0x%s' % packet[i], 16)
 
+        chk = self.getCheckSum(packet)
+        lastInd = len(packet) - 1
+        packet[lastInd] = chk  # packet is an array of int
 
-p
-acket[i] = int('0x%s' % packet[i], 16)
-
-chk = self.getCheckSum(packet)
-lastInd = len(packet) - 1
-packet[lastInd] = chk  # packet is an array of int
-
-packetSent = False
-while (not packetSent):
-    logging.debug("WRITE: %s" % packet)
-    if (self.SDEV.getCTS()) and ((int(round(time.time() * 1000)) - self.SDEV.lastWrite) > 10):
-        # Do not write packets too close together.. issues arise
-        self.writeFullPacket(packet)
-        logging.debug("WRITE: SUCCESS")
-        self.SDEV.lastWrite = int(round(time.time() * 1000))
-        packetSent = True
-    else:
-        logging.debug("WRITE: WAIT")
-        time.sleep(0.01)
+        packetSent = False
+        while (not packetSent):
+            logging.debug("WRITE: %s" % packet)
+            if (self.SDEV.getCTS()) and ((int(round(time.time() * 1000)) - self.SDEV.lastWrite) > 10):
+                # Do not write packets too close together.. issues arise
+                self.writeFullPacket(packet)
+                logging.debug("WRITE: SUCCESS")
+                self.SDEV.lastWrite = int(round(time.time() * 1000))
+                packetSent = True
+            else:
+                logging.debug("WRITE: WAIT")
+                time.sleep(0.01)
 
 
 def close(self):
