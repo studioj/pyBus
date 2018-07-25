@@ -110,7 +110,7 @@ def manage(packet):
 
     try:
         dstDir = DIRECTIVES[src][dst]
-        if ('ALL' in dstDir.keys()):
+        if 'ALL' in dstDir.keys():
             methodName = dstDir['ALL']
         else:
             methodName = dstDir[dataString]
@@ -118,7 +118,7 @@ def manage(packet):
         pass
 
     result = None
-    if methodName != None:
+    if methodName is not None:
         methodToCall = globals().get(methodName, None)
         if methodToCall:
             logging.debug("Directive found for packet - %s" % methodName)
@@ -384,9 +384,9 @@ def _displayTrackInfo(text=True):
 def _getTrackInfoQue():
     displayQue = []
     status = pB_audio.getInfo()
-    if ('status' in status):
+    if 'status' in status:
         mpdStatus = status['status']
-        if ('song' in mpdStatus and 'playlistlength' in mpdStatus):
+        if 'song' in mpdStatus and 'playlistlength' in mpdStatus:
             displayQue.append("%s of %s" % (int(mpdStatus['song']) + 1, mpdStatus['playlistlength']))
     return displayQue
 
@@ -396,9 +396,9 @@ def _getTrackNumber():
     status = pB_audio.getInfo()
     cdSongHundreds = 0
     cdSong = 0
-    if ('status' in status):
+    if 'status' in status:
         mpdStatus = status['status']
-        if ('song' in mpdStatus and 'playlistlength' in mpdStatus):
+        if 'song' in mpdStatus and 'playlistlength' in mpdStatus:
             cdSong = (int(mpdStatus['song']) + 1) % 100
             cdSongHundreds = int(int(mpdStatus['song']) / 100)
     return cdSongHundreds, cdSong
@@ -408,12 +408,12 @@ def _getTrackNumber():
 def _getTrackTextQue():
     displayQue = []
     status = pB_audio.getInfo()
-    if ('track' in status):
+    if 'track' in status:
         trackStatus = status['track']
         if trackStatus:
-            if ('artist' in trackStatus):
+            if 'artist' in trackStatus:
                 displayQue.append(status['track']['artist'])
-            if ('title' in trackStatus):
+            if 'title' in trackStatus:
                 displayQue.append(status['track']['title'])
         else:
             displayQue.append("Paused")
