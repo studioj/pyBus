@@ -4,7 +4,7 @@ import logging
 import sys
 import threading
 
-import pyBus_module_audio as pB_audio  # Add the audio module as it will only be manipulated from here in pyBus
+from lib import pyBus_module_audio as pB_audio  # Add the audio module as it will only be manipulated from here in pyBus
 
 # This module will read a packet, match it against the json object 'DIRECTIVES' below.
 # The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible

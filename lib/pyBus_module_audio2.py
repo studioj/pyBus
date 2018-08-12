@@ -3,6 +3,7 @@
 # The MPD module has practically no documentation as far as I know.. so a lot of this is guess-work, albeit educated guess-work
 import logging
 import time
+import traceback
 from socket import error as SocketError
 
 from mpd import (MPDClient)
@@ -126,7 +127,7 @@ def seek(delta):
         seekDest = int(float(CLIENT.status()['elapsed']) + delta)
         playListID = int(CLIENT.status()['song'])
         CLIENT.seek(playListID, seekDest)
-    except Exception, e:
+    except Exception as e:
         logging.warning("Issue seeking - elapsed key missing")
 
 
@@ -147,7 +148,7 @@ def getInfo(lastID=-1):
     while not state:
         try:
             state = CLIENT.status()
-        except Exception, e:
+        except Exception as e:
             logging.warning("MPD lost connection while reading status")
             time.sleep(.5)
             CLIENT == None
@@ -198,7 +199,7 @@ def getTrackID():
     try:
         currentTID = CLIENT.status()['songid']
         return currentTID
-    except e:
+    except Exception as e:
         logging.warning("Unexpected Exception occured:")
         logging.warning(traceback.format_exc())
         return 0

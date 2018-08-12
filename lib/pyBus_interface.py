@@ -95,16 +95,11 @@ class ibusFace():
 
     # Read a packet from the bus
     def readBusPacket(self):
-        packet = {
-            "src": None,
-            "len": None,
-            "dst": None,
-            "dat": [],
-            "xor": None
-        }
-        packet["src"] = self.readChar()
-        packet["len"] = self.readChar()
-        packet["dst"] = self.readChar()
+        packet = {"src": self.readChar(),
+                  "len": self.readChar(),
+                  "dst": self.readChar(),
+                  "dat": [],
+                  "xor": None}
 
         dataLen = int(packet['len'], 16) - 2
         if dataLen > 20:
@@ -127,7 +122,7 @@ class ibusFace():
         char = self.SDEV.read(1)
         try:
             char = '%02X' % ord(char)
-        except serial.SerialException, e:
+        except serial.SerialException as e:
             logging.warning("Hit a serialException: %s" % e)
             pass
         return char

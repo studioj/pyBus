@@ -6,15 +6,14 @@ import time
 import traceback
 from subprocess import Popen, PIPE
 
-import pyBus_module_audio as pB_audio  # Add the audio module as it will only be manipulated from here in pyBus
+from lib import pyBus_module_audio as pB_audio  # Add the audio module as it will only be manipulated from here in pyBus
 # Imports for the project
-import pyBus_module_display as pB_display  # Only events can manipulate the display stack
-import pyBus_tickUtil as pB_ticker  # Ticker for signals requiring intervals
+from lib import pyBus_module_display as pB_display  # Only events can manipulate the display stack
+from lib import pyBus_tickUtil as pB_ticker  # Ticker for signals requiring intervals
 
-# This module will read a packet, match it against the json object 'DIRECTIVES' below.
-# The packet is checked by matching the source value in packet (i.e. where the packet came from) to a key in the object if possible
-# Then matching the Destination if possible
-# The joining the 'data' component of the packet and matching that if possible.
+# This module will read a packet, match it against the json object 'DIRECTIVES' below. The packet is checked by
+# matching the source value in packet (i.e. where the packet came from) to a key in the object if possible Then
+# matching the Destination if possible The joining the 'data' component of the packet and matching that if possible.
 # The resulting value will be the name of a function to pass the packet to for processing of sorts.
 
 #####################################
@@ -37,7 +36,7 @@ DIRECTIVES = {
     },
     '68': {
         '18': {
-            '01': 'd_cdPollResponse',
+            '01':     'd_cdPollResponse',
             '380000': 'd_cdSendStatus',
             '380100': 'd_cdStopPlaying',
             '380300': 'd_cdStartPlaying',
@@ -59,7 +58,7 @@ DIRECTIVES = {
     },
     '50': {
         'C8': {
-            '01': 'd_cdPollResponse',  # This can happen via RT button or ignition
+            '01':   'd_cdPollResponse',  # This can happen via RT button or ignition
             '3B40': 'd_button6',  #
             '3B80': 'd_buttonRT',  #
             '3B90': 'd_buttonVoiceHold'  #
@@ -101,7 +100,8 @@ def init(writer):
     WRITER.writeBusPacket('3F', '00', ['0C', '4E', '01'])  # Turn on the 'clown nose' for 3 seconds
 
 
-# Manage the packet, meaning traverse the JSON 'DIRECTIVES' object and attempt to determine a suitable function to pass the packet to.
+# Manage the packet, meaning traverse the JSON 'DIRECTIVES' object and attempt to determine a suitable function to
+# pass the packet to.
 def manage(packet):
     src = packet['src']
     dst = packet['dst']
@@ -114,7 +114,7 @@ def manage(packet):
             methodName = dstDir['ALL']
         else:
             methodName = dstDir[dataString]
-    except Exception, e:
+    except Exception as e:
         pass
 
     result = None
@@ -210,8 +210,9 @@ def d_button6(packet):
     raise TriggerRestart("Restart Triggered")
 
 
-# This packet is used to parse all messages from the IKE (instrument control electronics), as it contains speed/RPM info.
-# But the data for speed/rpm will vary, so it must be parsed via a method linked to 'ALL' data in the JSON DIRECTIVES
+# This packet is used to parse all messages from the IKE (instrument control electronics), as it contains speed/RPM
+# info. But the data for speed/rpm will vary, so it must be parsed via a method linked to 'ALL' data in the JSON
+# DIRECTIVES
 def d_custom_IKE(packet):
     packet_data = packet['dat']
     # 18 : speed and RPM
@@ -246,14 +247,16 @@ def d_cdScanForward(packet):
     if not BLUETOOTH:
         cdSongHundreds, cdSong = _getTrackNumber()
         if "".join(packet['dat']) == "380401":
-            WRITER.writeBusPacket('18', '68', ['39', '03', '09', '00', '3F', '00', cdSongHundreds, cdSong])  # Fast forward scan signal
+            # Fast forward scan signal
+            WRITER.writeBusPacket('18', '68', ['39', '03', '09', '00', '3F', '00', cdSongHundreds, cdSong])
             pB_ticker.enableFunc("scanForward", 0.2)
 
 
 def d_cdScanBackward(packet):
     if not BLUETOOTH:
         cdSongHundreds, cdSong = _getTrackNumber()
-        WRITER.writeBusPacket('18', '68', ['39', '04', '09', '00', '3F', '00', cdSongHundreds, cdSong])  # Fast backward scan signal
+        # Fast backward scan signal
+        WRITER.writeBusPacket('18', '68', ['39', '04', '09', '00', '3F', '00', cdSongHundreds, cdSong])
         if "".join(packet['dat']) == "380400":
             pB_ticker.enableFunc("scanBackward", 0.2)
 
@@ -308,9 +311,9 @@ def speedTrigger(speed):
     global SESSION_DATA
     # This dictionary lists possible songs to play as well as times to skip to
     speedSongData = {
-        "The Prodigy/Invaders Must Die.mp3": 49,
+        "The Prodigy/Invaders Must Die.mp3":        49,
         "Edguy/Mandrake/05 - Wake Up The King.mp3": 93,
-        "Killswitch Engage - Holy Diver": 144
+        "Killswitch Engage - Holy Diver":           144
     }
     if (speed > 100) and SESSION_DATA['SPEED_SWITCH']:
         songNames = speedSongData.keys()
