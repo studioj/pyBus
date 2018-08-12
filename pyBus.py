@@ -114,7 +114,8 @@ signal.signal(signal.SIGINT, signal_handler_quit)
 
 configureLogging(loglevel, results.output_file)
 
-if __name__ == '__main__':
+
+def run_pybus():
     try:
         logging.critical("pyBus started !")
         core.initialize()
@@ -125,5 +126,9 @@ if __name__ == '__main__':
         logging.info("Going to sleep 2 seconds and restart")
         time.sleep(2)
         restart()
+
+
+if __name__ == '__main__':
+    run_pybus()
 
     sys.exit(0)
