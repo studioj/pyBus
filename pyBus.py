@@ -62,14 +62,14 @@ def configureLogging(numeric_level, logfile):
         # Put the right filename to core.LOGFILE
         core.LOGFILE = logfile
         # Use rotating files : 1 per day, and all are kept (no rotation thus)
-        filehandler = handlers.TimedRotatingFileHandler(logfile, when='d', interval=1, backupCount=0)
-        filehandler.suffix = "%Y-%m-%d"
+        file_handler = handlers.TimedRotatingFileHandler(logfile, when='d', interval=1, backupCount=0)
+        file_handler.suffix = "%Y-%m-%d"
         # We can set here different log formats for the stderr output !
-        filehandler.setLevel(0)
+        file_handler.setLevel(0)
         # use the same format as the file
-        filehandler.setFormatter(formatter)
+        file_handler.setFormatter(formatter)
         # add the handler to the root logger
-        logger.addHandler(filehandler)
+        logger.addHandler(file_handler)
 
     logging.info("Logging level set to %s", logging_level(numeric_level))
 
@@ -78,13 +78,14 @@ def configureLogging(numeric_level, logfile):
 # Program options
 #################################
 def createParser():
-    parser = argparse.ArgumentParser(epilog="If you have any questions : https://github.com/vonStauffenFeld/pyBus", \
-                                     description="This is %(prog)s, the programm to turn a RapsberryPi into an mp3 player for a BMW E46")
-    parser.add_argument('-v', '--verbose', action='count', default=0, \
+    parser = argparse.ArgumentParser(epilog="If you have any questions : https://github.com/vonStauffenFeld/pyBus",
+                                     description="This is %(prog)s, the programm to turn a RapsberryPi into an mp3 "
+                                                 "player for a BMW E46")
+    parser.add_argument('-v', '--verbose', action='count', default=0,
                         help='Increases verbosity of logging (up to -vvvv).')
-    parser.add_argument('-d', '--device', action='store', default='/dev/ttyUSB0', \
+    parser.add_argument('-d', '--device', action='store', default='/dev/ttyUSB0',
                         help='Path to iBus USB interface (Bought from reslers.de)')
-    parser.add_argument('-o', '--output_file', action='store', default='', \
+    parser.add_argument('-o', '--output_file', action='store', default='',
                         help='Path/Name of log file (log level of 0). If no file specified, output only to std.out')
     return parser
 
@@ -113,15 +114,16 @@ signal.signal(signal.SIGINT, signal_handler_quit)
 
 configureLogging(loglevel, results.output_file)
 
-try:
-    logging.critical("pyBus started !")
-    core.initialize()
-    core.run()
-except Exception:
-    logging.error("Caught unexpected exception:")
-    logging.error(traceback.format_exc())
-    logging.info("Going to sleep 2 seconds and restart")
-    time.sleep(2)
-    restart()
+if __name__ == '__main__':
+    try:
+        logging.critical("pyBus started !")
+        core.initialize()
+        core.run()
+    except Exception:
+        logging.error("Caught unexpected exception:")
+        logging.error(traceback.format_exc())
+        logging.info("Going to sleep 2 seconds and restart")
+        time.sleep(2)
+        restart()
 
-sys.exit(0)
+    sys.exit(0)
