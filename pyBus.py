@@ -100,21 +100,6 @@ def restart():
     os.execv(sys.executable, args)
 
 
-#####################################
-# MAIN
-#####################################
-parser = createParser()
-results = parser.parse_args()
-loglevel = results.verbose
-core.DEVPATH = results.device
-_startup_cwd = os.getcwd()
-
-# Manage Ctrl+C
-signal.signal(signal.SIGINT, signal_handler_quit)
-
-configureLogging(loglevel, results.output_file)
-
-
 def run_pybus():
     try:
         logging.critical("pyBus started !")
@@ -129,6 +114,19 @@ def run_pybus():
 
 
 if __name__ == '__main__':
+    #####################################
+    # MAIN
+    #####################################
+    parser = createParser()
+    results = parser.parse_args()
+    loglevel = results.verbose
+    core.DEVPATH = results.device
+    _startup_cwd = os.getcwd()
+
+    # Manage Ctrl+C
+    signal.signal(signal.SIGINT, signal_handler_quit)
+
+    configureLogging(loglevel, results.output_file)
     run_pybus()
 
     sys.exit(0)

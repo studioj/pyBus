@@ -3,9 +3,9 @@
 pyBus
 =====
 
-**This is a fork of [PyBus](https://github.com/3isenHeiM/pyBus)** by @3isenHeiM
+**This is a fork of [PyBus](https://github.com/3isenHeiM/pyBus)** by https://github.com/3isenHeiM
 
-**Which is a fork of [PyBus](https://github.com/ezeakeal/pyBus)** by @ezeakeal
+**Which is a fork of [PyBus](https://github.com/ezeakeal/pyBus)** by https://github.com/ezeakeal
 
 Main change: control of the RPi **via the buttons on the Radio**.
 
@@ -14,13 +14,13 @@ This is intended to run on a Raspberry Pi, installed in the E46.
 To make interaction with the CAN bus, it's to be used with the USB interface which can be acquired from [Reslers.de](http://www.reslers.de/IBUS/)
 
 my (planned) changes in this fork:
-- adding unittests
-- refactoring in True Python
-- deployment via package
-- pypi deployment
-- travis integration
-- coveralls integration
-- extra bells and whistles
+- [ ] adding unittests
+- [ ] refactoring in True Python
+- [ ] deployment via package
+- [x] travis integration
+- [ ] pypi deployment
+- [ ] coveralls integration
+- [ ] extra bells and whistles
 
 
 ## Overview

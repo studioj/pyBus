@@ -14,7 +14,9 @@
 #
 # ==============================================================================
 """
+import unittest
 
 
-def test_something():
-    assert True
+class TestPyBus(unittest.TestCase):
+    def test_something(self):
+        self.assertTrue(True)
