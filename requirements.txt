@@ -1,0 +1,2 @@
+pyserial==3.4
+tinytag==0.18.0
