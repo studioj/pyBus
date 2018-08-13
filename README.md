@@ -1,13 +1,21 @@
 pyBus
 =====
 
-**This is a fork of [PyBus](https://github.com/ezeakeal/pyBus)**
+**This is a fork of [PyBus](https://github.com/3isenHeiM/pyBus)**
+**Which is a fork of [PyBus](https://github.com/ezeakeal/pyBus)**
 
 Main change : control of the RPi **via the buttons on the Radio**.
 
 iBus interface for my E46 BMW written in Python.
 This is intended to run on a Raspberry Pi, installed in the E46.
 To make interaction with the CAN bus, it's to be used with the USB interface which can be acquired from [Reslers.de](http://www.reslers.de/IBUS/)
+
+@studioj :
+- adding unittests
+- refactoring in True Python
+- deployment via package
+- pypi deployment
+- extra bells and whistles
 
 
 ## Overview
