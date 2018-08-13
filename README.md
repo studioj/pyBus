@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/studioj/pyBus.svg?branch=master)](https://travis-ci.com/studioj/pyBus)
+
 pyBus
 =====
 
