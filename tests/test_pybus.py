@@ -1,12 +1,11 @@
 """
 # ==============================================================================
-# Name:             pybus2
+# Name:         test_pybus
 #
-# Purpose:          provide same functionality as normal pybus but make sure the code
-#                   is more expandable and importeable into other libraries
+# Purpose:      
 #
-# Author:           JEFNE
-# Created:          14/10/2018
+# Author:           Jef Neefs
+# Created:          13/08/2018
 # Copyright:        (c) Jef Neefs 2018
 # Licence:          GPLv3
 # ==============================================================================
@@ -14,3 +13,10 @@
 # pip install nose
 # ==============================================================================
 """
+from unittest import TestCase
+
+
+class TestPyBusCommunication(TestCase):
+    def test_pybus2_can_be_imported_without_problems(self):
+        import pybus2
+
