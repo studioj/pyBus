@@ -33,6 +33,6 @@ setup(name='pyBus',
       author_email='neefsj@mail.com',
       url='https://github.com/studioj/pyBus',
       packages=['serial', 'mpd'],
-      setup_requires=['pytest-runner'],
-      tests_require=['pytest'],
+      setup_requires=['pyserial'],
+      tests_require=['pytest', 'pytest-runner'],
       )

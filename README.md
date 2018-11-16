@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.com/studioj/pyBus.svg?branch=master)](https://travis-ci.com/studioj/pyBus)
+[![Coverage Status](https://coveralls.io/repos/github/studioj/pyBus/badge.svg?branch=master)](https://coveralls.io/github/studioj/pyBus?branch=master)
+[![BCH compliance](https://bettercodehub.com/edge/badge/studioj/pyBus?branch=master)](https://bettercodehub.com/)
+[![CodeFactor](https://www.codefactor.io/repository/github/studioj/pybus/badge)](https://www.codefactor.io/repository/github/studioj/pybus)
 
 pyBus
 =====

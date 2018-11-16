@@ -5,6 +5,11 @@ python:
   - "pypy3.5"
 cache: pip
 install:
-  - pip install -r requirements.txt
+- pip install pytest
+- pip install pytest-cov
+- pip install -r requirements.txt
 # command to run tests
-script: pytest
+script:
+- py.test --cov=bmw-ibus/
+after_success:
+- coveralls
