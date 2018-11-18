@@ -7,9 +7,10 @@ cache: pip
 install:
 - pip install pytest
 - pip install pytest-cov
-- pip install -r requirements.txt
-# command to run tests
+- pip install coveralls
+- pip install .
+
 script:
-- py.test --cov=bmw-ibus/
+- py.test --cov=bmw_ibus/
 after_success:
 - coveralls

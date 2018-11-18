@@ -24,7 +24,7 @@ this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
-setup(name='pyBus',
+setup(name='bmw_ibus',
       version='0.0.01',
       description='Python Distribution Utilities',
       long_description=long_description,
@@ -32,7 +32,7 @@ setup(name='pyBus',
       author='studioj',
       author_email='neefsj@mail.com',
       url='https://github.com/studioj/pyBus',
-      packages=['serial', 'mpd'],
-      setup_requires=['pyserial'],
+      packages=['bmw_ibus'],
+      install_requires=['pyserial'],
       tests_require=['pytest', 'pytest-runner'],
       )
