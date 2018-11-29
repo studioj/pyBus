@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.com/studioj/pyBus.svg?branch=master)](https://travis-ci.com/studioj/pyBus)
+[![Coverage Status](https://coveralls.io/repos/github/studioj/pyBus/badge.svg?branch=master)](https://coveralls.io/github/studioj/pyBus?branch=master)
+[![BCH compliance](https://bettercodehub.com/edge/badge/studioj/pyBus?branch=master)](https://bettercodehub.com/)
+[![CodeFactor](https://www.codefactor.io/repository/github/studioj/pybus/badge)](https://www.codefactor.io/repository/github/studioj/pybus)
 
 pyBus
 =====
@@ -14,12 +17,13 @@ This is intended to run on a Raspberry Pi, installed in the E46.
 To make interaction with the CAN bus, it's to be used with the USB interface which can be acquired from [Reslers.de](http://www.reslers.de/IBUS/)
 
 my (planned) changes in this fork:
-- [ ] adding unittests
-- [ ] refactoring in True Python
+- [ ] TDD greenfielding current functionality
 - [ ] deployment via package
 - [x] travis integration
 - [ ] pypi deployment
-- [ ] coveralls integration
+- [x] coveralls integration
+- [x] bettercodehub integration
+- [x] codefactor integration
 - [ ] extra bells and whistles
 
 

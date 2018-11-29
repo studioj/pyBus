@@ -1,0 +1,7 @@
+component_depth: 1
+languages:
+  - python
+exclude:
+  - lib/.*
+  - pyBus.py
+  - pyBus_core.py
