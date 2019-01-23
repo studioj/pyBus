@@ -34,5 +34,5 @@ setup(name='bmw_ibus',
       url='https://github.com/studioj/pyBus',
       packages=['bmw_ibus'],
       install_requires=['pyserial'],
-      tests_require=['pytest', 'pytest-runner'],
+      tests_require=['pytest', 'mock'],
       )
