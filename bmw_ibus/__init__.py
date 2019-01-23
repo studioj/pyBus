@@ -17,9 +17,10 @@ import re
 # noinspection PyPackageRequirements
 from serial.tools.list_ports import comports as list_comports
 # noinspection PyPackageRequirements
-from serial import Serial
+from serial import Serial, EIGHTBITS, PARITY_EVEN, STOPBITS_ONE
 
 RESLERS_DEVICE_DESCRIPTION = "CP210. USB .*UART"
+RESLERS_DEVICE_PARITY = PARITY_EVEN
 
 
 class IBus(object):
@@ -30,4 +31,4 @@ class IBus(object):
         list_of_comports = list_comports()
         for serial_device in list_of_comports:
             if re.match(RESLERS_DEVICE_DESCRIPTION, serial_device.description):
-                self.__serial_connection = Serial(serial_device.device)
+                self.__serial_connection = Serial(serial_device.device, parity=RESLERS_DEVICE_PARITY)
