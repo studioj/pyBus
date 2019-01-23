@@ -13,19 +13,21 @@
 # pip install nose
 # ==============================================================================
 """
-
+import re
+# noinspection PyPackageRequirements
 from serial.tools.list_ports import comports as list_comports
+# noinspection PyPackageRequirements
 from serial import Serial
 
-RESLERS_DEVICE_DESCRIPTION = "CP2102 USB to UART Bridge Controller"
+RESLERS_DEVICE_DESCRIPTION = "CP210. USB .*UART"
 
 
 class IBus(object):
     def __init__(self):
-        self.__serial = None
+        self.__serial_connection = None
 
     def connect(self):
         list_of_comports = list_comports()
         for serial_device in list_of_comports:
-            if serial_device.description == RESLERS_DEVICE_DESCRIPTION:
-                self.__serial = Serial(serial_device.device)
+            if re.match(RESLERS_DEVICE_DESCRIPTION, serial_device.description):
+                self.__serial_connection = Serial(serial_device.device)
