@@ -10,7 +10,7 @@ pyBus
 
 **Which is a fork of [PyBus](https://github.com/ezeakeal/pyBus)** by https://github.com/ezeakeal
 
-Main change: control of the RPi **via the buttons on the Radio**.
+Main change: creating a proper pythonic package with CI
 
 iBus interface for my E46 BMW written in Python.
 This is intended to run on a Raspberry Pi, installed in the E46.
@@ -27,47 +27,13 @@ my (planned) changes in this fork:
 - [ ] extra bells and whistles
 
 
-## Overview
-There are 2 main components:  
-**pyBus.py** - interfaces with the iBus to emulate a CD-Changer  
-**pyBus_audio.py** - MPD client that will interpret buttons pressed, and control the music.
-
-Functions foreseen :
-* Play/Pause
-* Next/Previous
-* Nagivate in the folders to play an entire folder.
-* View RPM, current speed...
-
-## Tasks
-- [x] Configure bluetooth for auto-pairing with any device
-- [x] Develop the mpd client to control the audio
-- [ ] (in progress) Integrate it into the pyBus
-- [ ] Test the integration with the actual CAN bus
-- [ ] Have fun
-
-## Controls
-
-These are the foreseen buttons to control the multimedia :
-
-Button | Action
---- | ---
-`<` | Parent folder
-`>` | Enter folder / Play file
-`+` | Next item (file/folder)
-`-` | Previous item (file or folder)
-`1` | Play/pause
-`2` | TBD
-`3` | Previous song
-`4` | Next song
-`5` | Toggle Bluetooth audio
-`6` | Display car info (speed, ...)
 
 
 ### Useful links
 http://linux.die.net/man/5/mpd.conf   
 http://miro.oorganica.com/raspberry-pi-mpd/   
-http://web.comhem.se/bengt-olof.swing/ibusdevicesandoperations.htm   
-https://pythonhosted.org/python-mpd2/
+http://web.comhem.se/bengt-olof.swing/ibusdevicesandoperations.htm 
+https://medium.com/@trentseed/connecting-a-bmw-to-the-internet-part-two-1ee2ea44d4a2
 
 ### Warning
 All software is in early alpha stages!
