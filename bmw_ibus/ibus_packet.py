@@ -23,4 +23,13 @@ class IBusPacket(object):
         self.message = message
 
     def get_raw(self):
-        return bytearray.fromhex("3F06720C01010047")
+        self.length = bytearray.fromhex(str(len(self.destination + self.message) + 1).zfill(2))
+        self.xor = self.__calculate_xor(self.source + self.length + self.destination + self.message)
+        return self.source + self.length + self.destination + self.message + self.xor
+
+    def __calculate_xor(self, packet_to_xor):
+        chk = 0
+        packet_to_xor.append(0)
+        for p in packet_to_xor:
+            chk ^= p
+        return chk.to_bytes(1, "big")

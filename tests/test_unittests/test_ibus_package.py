@@ -45,3 +45,15 @@ class TestIBusPacket(unittest.TestCase):
         # Then
         self.assertIsInstance(raw_data, bytearray)
         self.assertEqual(bytearray.fromhex("3F06720C01010047"), raw_data)
+
+    def test_ibus_packet_has_a_get_raw_functionality_which_returns_a_usable_bytearray_for_serial_vol_up(self):
+        # Given move driver seat forward message of 50046832111f
+        source = bytearray.fromhex("50")
+        destination = bytearray.fromhex("68")
+        message = bytearray.fromhex("3211")
+        # When
+        ibus_packet = IBusPacket(source, destination, message)
+        raw_data = ibus_packet.get_raw()
+        # Then
+        self.assertIsInstance(raw_data, bytearray)
+        self.assertEqual(bytearray.fromhex("50046832111f"), raw_data)
