@@ -57,3 +57,24 @@ class TestIBusPacket(unittest.TestCase):
         # Then
         self.assertIsInstance(raw_data, bytearray)
         self.assertEqual(bytearray.fromhex("50046832111f"), raw_data)
+
+    def test_ibus_packet_has_a_string_representation(self):
+        source = bytearray.fromhex("80")
+        destination = bytearray.fromhex("BF")
+        message = bytearray.fromhex("1103")
+        ibus_packet = IBusPacket(source, destination, message)
+        self.assertRegex(str(ibus_packet), r"Source: .*, Destination: .*, Message: .*")
+
+    def test_ibus_packet_translates_the_source_from_GM_or_broadcast(self):
+        source = bytearray.fromhex("00")
+        destination = bytearray.fromhex("BF")
+        message = bytearray.fromhex("1103")
+        ibus_packet = IBusPacket(source, destination, message)
+        self.assertRegex(str(ibus_packet), r"Source: Broadcast,GM.*")
+
+    def test_ibus_packet_translates_the_source_from_SHD(self):
+        source = bytearray.fromhex("08")
+        destination = bytearray.fromhex("BF")
+        message = bytearray.fromhex("1103")
+        ibus_packet = IBusPacket(source, destination, message)
+        self.assertRegex(str(ibus_packet), r"Source: SHD.*")
