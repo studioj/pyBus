@@ -37,7 +37,7 @@ class IBusPacket(object):
         return chk.to_bytes(1, "big")
 
     def __str__(self):
-        return f"Source: {devices[str(self.source)]}, Destination: .*, Message: .*"
+        return f"Source: {devices[str(self.source)]}, Destination: {devices[str(self.destination)]}, Message: .*"
 
 
 # retrieved partially from http://web.comhem.se/bengt-olof.swing/ibusdevicesandoperations.htm

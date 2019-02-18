@@ -78,3 +78,17 @@ class TestIBusPacket(unittest.TestCase):
         message = bytearray.fromhex("1103")
         ibus_packet = IBusPacket(source, destination, message)
         self.assertRegex(str(ibus_packet), r"Source: SHD.*")
+
+    def test_ibus_packet_translates_the_destination_from_GM_or_broadcast(self):
+        source = bytearray.fromhex("00")
+        destination = bytearray.fromhex("BF")
+        message = bytearray.fromhex("1103")
+        ibus_packet = IBusPacket(source, destination, message)
+        self.assertRegex(str(ibus_packet), r".*, Destination: LCM, Light Control Module. GLO.*")
+
+    def test_ibus_packet_translates_the_destination_from_SHD(self):
+        source = bytearray.fromhex("08")
+        destination = bytearray.fromhex("80")
+        message = bytearray.fromhex("1103")
+        ibus_packet = IBusPacket(source, destination, message)
+        self.assertRegex(str(ibus_packet), r".*, Destination: IKE")
