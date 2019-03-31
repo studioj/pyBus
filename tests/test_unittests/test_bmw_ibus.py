@@ -55,3 +55,5 @@ class TestBMWiBusSerialConnection(TestCase):
                 ibus = IBus()
                 ibus.connect()
                 mocked_serial.assert_called_once_with(comports_mock.return_value[2].device, parity=serial.PARITY_EVEN)
+
+    def test_
